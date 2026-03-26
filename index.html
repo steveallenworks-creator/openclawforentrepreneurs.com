@@ -633,6 +633,53 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
+     PARTICLES BACKGROUND
+════════════════════════════════════════════════════════════ -->
+<div id="particles-js" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:#0a0a0a;"></div>
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+particlesJS('particles-js', {
+  particles: {
+    number: { value: 80, density: { enable: true, value_area: 800 } },
+    color: { value: '#7c3aed' },
+    shape: { type: 'circle' },
+    opacity: { value: 0.45, random: true },
+    size: { value: 2.5, random: true },
+    line_linked: {
+      enable: true,
+      distance: 140,
+      color: '#7c3aed',
+      opacity: 0.25,
+      width: 1
+    },
+    move: {
+      enable: true,
+      speed: 1.2,
+      direction: 'none',
+      random: true,
+      straight: false,
+      out_mode: 'out',
+      bounce: false
+    }
+  },
+  interactivity: {
+    detect_on: 'window',
+    events: {
+      onhover: { enable: true, mode: 'repulse' },
+      onclick: { enable: true, mode: 'push' },
+      resize: true
+    },
+    modes: {
+      repulse: { distance: 120, duration: 0.5 },
+      push: { particles_nb: 5 }
+    }
+  },
+  retina_detect: true
+});
+</script>
+
+
+<!-- ═══════════════════════════════════════════════════════════
      JAVASCRIPT — FAQ accordion + waitlist form handler
      (Vanilla JS, no libraries, no external scripts)
 ════════════════════════════════════════════════════════════ -->
