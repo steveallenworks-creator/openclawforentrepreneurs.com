@@ -496,17 +496,22 @@
           });
           for (let i = 0; i < particles.length; i += 1) {
             const a = particles[i];
+            const aPointerDist = Math.hypot(pointer.x - a.x, pointer.y - a.y) || 0.001;
+            const aPointerBoost = Math.max(0, 1 - aPointerDist / (cfg.pointerLineRadius || 220));
             for (let j = i + 1; j < particles.length; j += 1) {
               const b = particles[j];
               const dx = a.x - b.x;
               const dy = a.y - b.y;
               const dist = Math.hypot(dx, dy);
               if (dist > cfg.lineDistance) continue;
-              const alpha = (1 - dist / cfg.lineDistance) * cfg.lineOpacity * Math.min(a.depth, b.depth) * (a.leader || b.leader ? 1.2 : 1);
+              const bPointerDist = Math.hypot(pointer.x - b.x, pointer.y - b.y) || 0.001;
+              const bPointerBoost = Math.max(0, 1 - bPointerDist / (cfg.pointerLineRadius || 220));
+              const pointerBoost = 1 + Math.max(aPointerBoost, bPointerBoost) * (cfg.pointerLineBoost || 2.2);
+              const alpha = (1 - dist / cfg.lineDistance) * cfg.lineOpacity * Math.min(a.depth, b.depth) * (a.leader || b.leader ? 1.2 : 1) * pointerBoost;
               if (alpha <= 0.01) continue;
               ctx.beginPath();
-              ctx.strokeStyle = 'rgba(' + cfg.lineColor.join(',') + ',' + alpha.toFixed(3) + ')';
-              ctx.lineWidth = cfg.lineWidth;
+              ctx.strokeStyle = 'rgba(' + cfg.lineColor.join(',') + ',' + Math.min(alpha, 0.92).toFixed(3) + ')';
+              ctx.lineWidth = cfg.lineWidth * (1 + Math.max(aPointerBoost, bPointerBoost) * 1.6);
               ctx.moveTo(a.x, a.y);
               ctx.lineTo(b.x, b.y);
               ctx.stroke();
@@ -514,14 +519,16 @@
           }
           particles.forEach(function (p) {
             const pulse = 0.66 + 0.34 * Math.sin(p.twinkle + (time || 0) * 0.0012);
-            const size = p.baseSize * p.depth * (p.leader ? 1.45 : 1);
-            const alpha = cfg.nodeOpacity * pulse;
+            const pointerDist = Math.hypot(pointer.x - p.x, pointer.y - p.y) || 0.001;
+            const pointerBoost = Math.max(0, 1 - pointerDist / (cfg.pointerNodeRadius || 180));
+            const size = p.baseSize * p.depth * (p.leader ? 1.45 : 1) * (1 + pointerBoost * (cfg.pointerNodeScale || 1.8));
+            const alpha = cfg.nodeOpacity * pulse * (1 + pointerBoost * (cfg.pointerAlphaBoost || 0.9));
             ctx.beginPath();
-            ctx.fillStyle = 'rgba(' + cfg.glowColor.join(',') + ',' + (alpha * (p.leader ? 0.18 : 0.1)).toFixed(3) + ')';
-            ctx.arc(p.x, p.y, size * (p.leader ? 5.2 : 4.2), 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(' + cfg.glowColor.join(',') + ',' + Math.min(alpha * (p.leader ? 0.22 : 0.12), 0.9).toFixed(3) + ')';
+            ctx.arc(p.x, p.y, size * (p.leader ? 6.4 : 5.2), 0, Math.PI * 2);
             ctx.fill();
             ctx.beginPath();
-            ctx.fillStyle = 'rgba(' + cfg.nodeColor.join(',') + ',' + alpha.toFixed(3) + ')';
+            ctx.fillStyle = 'rgba(' + cfg.nodeColor.join(',') + ',' + Math.min(alpha, 0.98).toFixed(3) + ')';
             ctx.arc(p.x, p.y, Math.max(0.55, size), 0, Math.PI * 2);
             ctx.fill();
           });
@@ -542,36 +549,40 @@
 
       const variants = {
         constellation: {
-          count: 92, seedVelocity: 0.28, minSize: 0.65, maxSize: 1.9,
-          driftForce: 1.0, flowScale: 1.0, friction: 0.985, radius: 190,
-          attract: 0.017, swirl: 0.012, repel: 0.001,
-          lineDistance: 146, lineOpacity: 0.22, lineWidth: 1,
+          count: 96, seedVelocity: 0.30, minSize: 0.68, maxSize: 2.0,
+          driftForce: 1.0, flowScale: 1.0, friction: 0.982, radius: 220,
+          attract: 0.050, swirl: 0.030, repel: 0.004,
+          lineDistance: 156, lineOpacity: 0.24, lineWidth: 1.05,
           lineColor: [124, 58, 237], nodeColor: [245, 244, 255], glowColor: [167, 139, 250],
-          nodeOpacity: 0.9, twinkleSpeed: 1, leaderRate: 0.02, leaderBias: 0.2
+          nodeOpacity: 0.92, twinkleSpeed: 1, leaderRate: 0.02, leaderBias: 0.2,
+          pointerLineRadius: 260, pointerLineBoost: 3.4, pointerNodeRadius: 220, pointerNodeScale: 2.8, pointerAlphaBoost: 1.4
         },
         aurora: {
-          count: 118, seedVelocity: 0.38, minSize: 0.6, maxSize: 1.7,
-          driftForce: 1.5, flowScale: 1.55, friction: 0.987, radius: 240,
-          attract: 0.008, swirl: 0.024, repel: 0,
-          lineDistance: 128, lineOpacity: 0.12, lineWidth: 1,
+          count: 132, seedVelocity: 0.46, minSize: 0.58, maxSize: 1.72,
+          driftForce: 1.9, flowScale: 1.85, friction: 0.988, radius: 250,
+          attract: 0.014, swirl: 0.040, repel: 0,
+          lineDistance: 124, lineOpacity: 0.09, lineWidth: 0.9,
           lineColor: [99, 102, 241], nodeColor: [219, 234, 254], glowColor: [129, 140, 248],
-          nodeOpacity: 0.78, twinkleSpeed: 1.2, leaderRate: 0.04, leaderBias: 0.45
+          nodeOpacity: 0.76, twinkleSpeed: 1.25, leaderRate: 0.05, leaderBias: 0.65,
+          pointerLineRadius: 180, pointerLineBoost: 1.1, pointerNodeRadius: 160, pointerNodeScale: 0.9, pointerAlphaBoost: 0.5
         },
         magnetic: {
-          count: 86, seedVelocity: 0.24, minSize: 0.7, maxSize: 2.2,
-          driftForce: 0.9, flowScale: 0.9, friction: 0.982, radius: 250,
-          attract: 0.031, swirl: 0.02, repel: 0,
-          lineDistance: 170, lineOpacity: 0.18, lineWidth: 1.1,
+          count: 92, seedVelocity: 0.22, minSize: 0.72, maxSize: 2.3,
+          driftForce: 0.75, flowScale: 0.82, friction: 0.978, radius: 285,
+          attract: 0.070, swirl: 0.050, repel: 0,
+          lineDistance: 176, lineOpacity: 0.20, lineWidth: 1.2,
           lineColor: [168, 85, 247], nodeColor: [255, 250, 255], glowColor: [196, 181, 253],
-          nodeOpacity: 0.92, twinkleSpeed: 0.95, leaderRate: 0.03, leaderBias: 0.25
+          nodeOpacity: 0.94, twinkleSpeed: 0.95, leaderRate: 0.03, leaderBias: 0.3,
+          pointerLineRadius: 300, pointerLineBoost: 2.2, pointerNodeRadius: 260, pointerNodeScale: 2.3, pointerAlphaBoost: 1.2
         },
         swarm: {
-          count: 112, seedVelocity: 0.34, minSize: 0.6, maxSize: 1.8,
-          driftForce: 1.3, flowScale: 1.25, friction: 0.986, radius: 220,
-          attract: 0.012, swirl: 0.018, repel: 0.004,
-          lineDistance: 118, lineOpacity: 0.16, lineWidth: 0.9,
+          count: 118, seedVelocity: 0.38, minSize: 0.6, maxSize: 1.85,
+          driftForce: 1.45, flowScale: 1.35, friction: 0.986, radius: 230,
+          attract: 0.020, swirl: 0.026, repel: 0.018,
+          lineDistance: 116, lineOpacity: 0.15, lineWidth: 0.9,
           lineColor: [56, 189, 248], nodeColor: [240, 249, 255], glowColor: [56, 189, 248],
-          nodeOpacity: 0.84, twinkleSpeed: 1.1, leaderRate: 0.08, leaderBias: 0.95
+          nodeOpacity: 0.86, twinkleSpeed: 1.12, leaderRate: 0.10, leaderBias: 1.15,
+          pointerLineRadius: 170, pointerLineBoost: 1.0, pointerNodeRadius: 150, pointerNodeScale: 1.1, pointerAlphaBoost: 0.6
         }
       };
 
