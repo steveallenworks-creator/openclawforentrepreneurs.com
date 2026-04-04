@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Setup — OpenClaw for Entrepreneurs</title>
+
+  <meta name="description" content="Configure your AI system. Tell us your setup, goals, and how you want to work — we'll get you running." />
+  <meta name="robots" content="noindex" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%237c3aed'/><text y='24' x='4' font-size='22'>🤖</text></svg>" />
+
+  <style>
+    /* ─── RESET & BASE ─── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:           #0a0a0a;
+      --surface:      #111111;
+      --surface-2:    #161616;
+      --border:       #1e1e1e;
+      --border-glow:  #7c3aed44;
+      --text:         #f0f0f0;
+      --muted:        #888888;
+      --muted-2:      #555555;
+      --accent:       #7c3aed;
+      --accent-light: #9d5cf6;
+      --accent-dim:   #7c3aed22;
+      --accent-glow:  0 0 40px #7c3aed33;
+      --green:        #22c55e;
+      --radius-sm:    4px;
+      --radius-md:    8px;
+      --radius-lg:    16px;
+    }
+
+    html { scroll-behavior: smooth; font-size: 16px; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+
+    a { color: var(--accent-light); text-decoration: none; transition: color 0.2s; }
+    a:hover { color: var(--text); }
+
+    ::selection { background: #7c3aed55; color: #fff; }
+
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: var(--bg); }
+    ::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+
+    /* ─── NAV ─── */
+    .nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      height: 60px;
+      padding: 0 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(10,10,10,0.88);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav__logo {
+      font-weight: 800;
+      font-size: 0.95rem;
+      color: var(--text);
+      letter-spacing: -0.02em;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav__logo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+      animation: pulse-dot 2s ease-in-out infinite;
+      flex-shrink: 0;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; box-shadow: 0 0 8px var(--accent); }
+      50%       { opacity: 0.6; box-shadow: 0 0 16px var(--accent); }
+    }
+
+    .nav__back {
+      font-size: 0.82rem;
+      color: var(--muted);
+      font-weight: 500;
+      transition: color 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav__back:hover { color: var(--text); }
+
+    /* ─── SETUP MAIN ─── */
+    .setup-main {
+      min-height: 100vh;
+      padding: 80px 24px 80px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .setup-inner {
+      width: 100%;
+      max-width: 680px;
+    }
+
+    /* ─── PROGRESS BAR ─── */
+    .setup-progress {
+      width: 100%;
+      max-width: 680px;
+      margin-bottom: 48px;
+    }
+
+    .progress-steps {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      position: relative;
+      margin-bottom: 0;
+    }
+
+    .progress-steps::before {
+      content: '';
+      position: absolute;
+      top: 18px;
+      left: calc(12.5%);
+      right: calc(12.5%);
+      height: 2px;
+      background: var(--border);
+      z-index: 0;
+    }
+
+    .progress-line-fill {
+      position: absolute;
+      top: 18px;
+      left: calc(12.5%);
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-light));
+      z-index: 1;
+      width: 0;
+      transition: width 0.4s ease;
+    }
+
+    .progress-step {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      position: relative;
+      z-index: 2;
+      flex: 1;
+    }
+
+    .progress-step__dot {
+      width: 36px; height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--border);
+      background: var(--bg);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--muted-2);
+      transition: all 0.3s ease;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .progress-step__label {
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--muted-2);
+      text-align: center;
+      transition: color 0.3s;
+      white-space: nowrap;
+    }
+
+    .progress-step.active .progress-step__dot {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      color: var(--accent-light);
+      box-shadow: 0 0 20px #7c3aed44;
+    }
+    .progress-step.active .progress-step__label { color: var(--accent-light); }
+
+    .progress-step.done .progress-step__dot {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+    .progress-step.done .progress-step__label { color: var(--muted); }
+
+    /* ─── STEP PANELS ─── */
+    .step-panel {
+      display: none;
+      width: 100%;
+      max-width: 680px;
+      transition: opacity 0.28s ease, transform 0.28s ease;
+    }
+    .step-panel.active { display: block; }
+
+    /* ─── STEP HEADER ─── */
+    .step-eyebrow {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      color: var(--accent-light);
+      margin-bottom: 12px;
+      opacity: 0.85;
+    }
+
+    .step-title {
+      font-family: 'Inter', sans-serif;
+      font-size: clamp(1.4rem, 4vw, 1.85rem);
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.2;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+
+    .step-sub {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 36px;
+      line-height: 1.6;
+    }
+
+    /* ─── FORM SECTIONS ─── */
+    .form-section {
+      margin-bottom: 36px;
+    }
+
+    .form-section--followup {
+      background: var(--surface);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-md);
+      padding: 20px;
+      animation: slideDown 0.25s ease;
+    }
+
+    @keyframes slideDown {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-label {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--text);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      letter-spacing: -0.01em;
+    }
+
+    .form-label-hint {
+      font-size: 0.72rem;
+      font-weight: 500;
+      color: var(--muted-2);
+      letter-spacing: 0;
+    }
+
+    /* ─── TILE GRIDS ─── */
+    .tile-grid {
+      display: grid;
+      gap: 10px;
+    }
+    .tile-grid--2 { grid-template-columns: repeat(2, 1fr); }
+    .tile-grid--3 { grid-template-columns: repeat(3, 1fr); }
+    .tile-grid--4 { grid-template-columns: repeat(4, 1fr); }
+    .tile-grid--5 { grid-template-columns: repeat(5, 1fr); }
+
+    /* ─── TILES ─── */
+    .tile {
+      background: var(--surface-2);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 14px 12px;
+      cursor: pointer;
+      user-select: none;
+      text-align: center;
+      font-size: 0.82rem;
+      font-weight: 600;
+      color: var(--muted);
+      line-height: 1.4;
+      transition: border-color 0.18s, background 0.18s, color 0.18s, box-shadow 0.18s, transform 0.15s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+
+    .tile:hover {
+      border-color: var(--accent-light);
+      color: var(--text);
+      background: #1a1a2a;
+      transform: translateY(-1px);
+      box-shadow: 0 4px 16px #7c3aed1a;
+    }
+
+    .tile.selected {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      color: var(--text);
+      box-shadow: 0 0 0 1px var(--accent), 0 4px 20px #7c3aed22;
+    }
+
+    .tile.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 6px; right: 9px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      color: var(--accent-light);
+    }
+
+    .tile--sm {
+      padding: 10px 8px;
+      font-size: 0.8rem;
+    }
+
+    .tile--muted {
+      border-style: dashed;
+      color: var(--muted-2);
+    }
+    .tile--muted:hover { color: var(--muted); }
+
+    .tile--distinct {
+      border-color: var(--accent-light);
+      border-style: dashed;
+      background: linear-gradient(135deg, #16102a 0%, #0d0d18 100%);
+      color: var(--accent-light);
+      font-style: italic;
+    }
+    .tile--distinct:hover {
+      background: linear-gradient(135deg, #1e1440 0%, #13101e 100%);
+      color: var(--text);
+    }
+    .tile--distinct.selected {
+      background: var(--accent-dim);
+    }
+
+    .tile__icon {
+      font-size: 1.3rem;
+      line-height: 1;
+    }
+
+    .tile__label {
+      font-size: 0.8rem;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    /* ─── PLAN TIER CARDS ─── */
+    .plan-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .plan-card {
+      background: var(--surface);
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: 20px 16px;
+      cursor: pointer;
+      user-select: none;
+      transition: border-color 0.18s, background 0.18s, box-shadow 0.18s, transform 0.15s;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .plan-card:hover {
+      border-color: var(--accent-light);
+      background: #1a1a2a;
+      transform: translateY(-2px);
+    }
+
+    .plan-card.selected {
+      border-color: var(--accent);
+      background: var(--accent-dim);
+      box-shadow: 0 0 0 1px var(--accent), 0 4px 24px #7c3aed22;
+    }
+
+    .plan-card.selected::after {
+      content: '✓';
+      position: absolute;
+      top: 10px; right: 12px;
+      font-size: 0.75rem;
+      font-weight: 800;
+      color: var(--accent-light);
+    }
+
+    .plan-card__name {
+      font-size: 0.7rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+    }
+
+    .plan-card__price {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--text);
+      line-height: 1.1;
+      font-family: 'JetBrains Mono', monospace;
+    }
+
+    .plan-card__price sup { font-size: 0.75rem; vertical-align: super; }
+
+    .plan-card__note {
+      font-size: 0.72rem;
+      color: var(--muted-2);
+      line-height: 1.4;
+    }
+
+    /* ─── FORM INPUTS ─── */
+    .input-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .input-label {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .input-label .optional {
+      font-size: 0.72rem;
+      font-weight: 400;
+      color: var(--muted-2);
+    }
+
+    .input-field, .select-field {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 13px 16px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+
+    .input-field::placeholder { color: var(--muted-2); }
+
+    .input-field:focus, .select-field:focus {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px #7c3aed18;
+    }
+
+    .select-field {
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23888' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 14px center;
+      cursor: pointer;
+      color: var(--muted);
+    }
+
+    .select-field option { background: #111; color: var(--text); }
+
+    /* ─── VALIDATION ─── */
+    .step-error {
+      display: none;
+      background: #2a0d0d;
+      border: 1px solid #cc3333;
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font-size: 0.82rem;
+      color: #ff6b6b;
+      margin-top: 12px;
+    }
+
+    /* ─── STEP ACTIONS ─── */
+    .step-actions {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 40px;
+      padding-top: 24px;
+      border-top: 1px solid var(--border);
+      gap: 16px;
+    }
+
+    .btn-back {
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 12px 22px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.88rem;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+      transition: all 0.2s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-back:hover {
+      border-color: var(--muted);
+      color: var(--text);
+    }
+
+    .btn-next {
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 14px 32px;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 24px #7c3aed33;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-next:hover {
+      background: #9d5cf6;
+      box-shadow: 0 0 40px #7c3aed55;
+      transform: translateY(-1px);
+    }
+    .btn-next:active { transform: translateY(0); }
+
+    .btn-submit {
+      background: var(--accent);
+      border: none;
+      border-radius: var(--radius-sm);
+      padding: 18px 40px;
+      font-family: 'Inter', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: #fff;
+      cursor: pointer;
+      transition: all 0.2s;
+      box-shadow: 0 0 32px #7c3aed44;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: -0.01em;
+    }
+    .btn-submit:hover {
+      background: #9d5cf6;
+      box-shadow: 0 0 56px #7c3aed55;
+      transform: translateY(-2px);
+    }
+
+    /* ─── BOOKING CALL CARDS ─── */
+    .booking-section {
+      margin-top: 40px;
+      padding-top: 32px;
+      border-top: 1px solid var(--border);
+    }
+
+    .booking-section__heading {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--muted);
+      text-align: center;
+      margin-bottom: 16px;
+      letter-spacing: 0.02em;
+    }
+
+    .booking-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .booking-card {
+      background: var(--surface);
+      border: 1px solid var(--border-glow);
+      border-radius: var(--radius-md);
+      padding: 22px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      text-decoration: none;
+    }
+
+    .booking-card:hover {
+      border-color: var(--accent);
+      box-shadow: 0 0 32px #7c3aed22;
+      transform: translateY(-2px);
+      color: inherit;
+    }
+
+    .booking-card__badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.67rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent-light);
+      background: var(--accent-dim);
+      border: 1px solid var(--border-glow);
+      border-radius: 4px;
+      padding: 3px 8px;
+      width: fit-content;
+    }
+
+    .booking-card__title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--text);
+      line-height: 1.3;
+    }
+
+    .booking-card__price {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--text);
+      font-family: 'JetBrains Mono', monospace;
+      line-height: 1;
+    }
+
+    .booking-card__desc {
+      font-size: 0.78rem;
+      color: var(--muted);
+      line-height: 1.5;
+      margin: 0;
+      flex: 1;
+    }
+
+    .booking-card__cta {
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: var(--accent-light);
+      margin-top: 4px;
+    }
+    .booking-card:hover .booking-card__cta { color: var(--text); }
+
+    /* ─── SUCCESS STATE ─── */
+    .setup-success {
+      display: none;
+      text-align: center;
+      padding: 60px 24px;
+      max-width: 480px;
+    }
+
+    .setup-success__icon {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    .setup-success h2 {
+      font-size: 1.75rem;
+      font-weight: 800;
+      color: var(--text);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .setup-success p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    /* ─── RESPONSIVE ─── */
+    @media (max-width: 640px) {
+      .progress-step__label { display: none; }
+      .tile-grid--3 { grid-template-columns: repeat(2, 1fr); }
+      .tile-grid--4 { grid-template-columns: repeat(3, 1fr); }
+      .tile-grid--5 { grid-template-columns: repeat(3, 1fr); }
+      .plan-grid { grid-template-columns: 1fr; }
+      .booking-grid { grid-template-columns: 1fr; }
+      .step-actions { flex-direction: column-reverse; }
+      .btn-next, .btn-back { width: 100%; justify-content: center; }
+    }
+
+    @media (max-width: 460px) {
+      .tile-grid--4 { grid-template-columns: repeat(2, 1fr); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ══ PARTICLES BACKGROUND ══ -->
+<div id="particles-js" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:#0a0a0a;"></div>
+
+<!-- ══ NAV ══ -->
+<nav class="nav">
+  <div class="nav__logo">
+    <span class="nav__logo-dot"></span>
+    OpenClaw
+  </div>
+  <a href="index.html" class="nav__back">← Back to site</a>
+</nav>
+
+
+<!-- ══ MAIN ══ -->
+<main class="setup-main">
+
+  <!-- Progress -->
+  <div class="setup-progress" id="setup-progress">
+    <div class="progress-steps">
+      <div class="progress-line-fill" id="progress-line-fill"></div>
+      <div class="progress-step active" id="pstep-1">
+        <div class="progress-step__dot">01</div>
+        <div class="progress-step__label">Your Setup</div>
+      </div>
+      <div class="progress-step" id="pstep-2">
+        <div class="progress-step__dot">02</div>
+        <div class="progress-step__label">Your Goals</div>
+      </div>
+      <div class="progress-step" id="pstep-3">
+        <div class="progress-step__dot">03</div>
+        <div class="progress-step__label">About You</div>
+      </div>
+      <div class="progress-step" id="pstep-4">
+        <div class="progress-step__dot">04</div>
+        <div class="progress-step__label">Get Started</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══ STEP 1 — YOUR SETUP ══ -->
+  <div id="step-1" class="step-panel active">
+    <div style="margin-bottom:32px;">
+      <div class="step-eyebrow">// STEP 01 — SYSTEM CONFIGURATION</div>
+      <h1 class="step-title">Configure your AI stack</h1>
+      <p class="step-sub">Tell us what hardware you're running and which models you want to use. This lets us tailor your setup guide.</p>
+    </div>
+
+    <!-- Hardware -->
+    <div class="form-section">
+      <div class="form-label">What hardware do you have?</div>
+      <div class="tile-grid tile-grid--3" id="hardware-grid">
+        <div class="tile" data-group="hardware" data-value="Mac Mini M4">
+          <span class="tile__icon">🖥️</span>
+          <span class="tile__label">Mac Mini M4</span>
+        </div>
+        <div class="tile" data-group="hardware" data-value="Mac Mini M4 Pro">
+          <span class="tile__icon">🖥️</span>
+          <span class="tile__label">Mac Mini M4 Pro</span>
+        </div>
+        <div class="tile" data-group="hardware" data-value="Mac Studio">
+          <span class="tile__icon">💻</span>
+          <span class="tile__label">Mac Studio</span>
+        </div>
+        <div class="tile" data-group="hardware" data-value="VPS">
+          <span class="tile__icon">☁️</span>
+          <span class="tile__label">VPS</span>
+        </div>
+        <div class="tile" data-group="hardware" data-value="Cloud Server">
+          <span class="tile__icon">🌐</span>
+          <span class="tile__label">Cloud Server</span>
+        </div>
+        <div class="tile tile--muted" data-group="hardware" data-value="None yet">
+          <span class="tile__icon">🛒</span>
+          <span class="tile__label">I don't have one yet</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- RAM follow-up (hidden until hardware selected) -->
+    <div class="form-section form-section--followup" id="ram-followup" style="display:none;">
+      <div class="form-label">How much RAM does it have?</div>
+      <div class="tile-grid tile-grid--4" id="ram-grid">
+        <div class="tile tile--sm" data-group="ram" data-value="8GB">8GB</div>
+        <div class="tile tile--sm" data-group="ram" data-value="16GB">16GB</div>
+        <div class="tile tile--sm" data-group="ram" data-value="24GB">24GB</div>
+        <div class="tile tile--sm" data-group="ram" data-value="48GB">48GB</div>
+        <div class="tile tile--sm" data-group="ram" data-value="64GB">64GB</div>
+        <div class="tile tile--sm" data-group="ram" data-value="128GB">128GB</div>
+        <div class="tile tile--sm tile--muted" data-group="ram" data-value="Not sure">Not sure</div>
+      </div>
+    </div>
+
+    <!-- LLMs -->
+    <div class="form-section">
+      <div class="form-label">Which LLMs do you want to use? <span class="form-label-hint">Select all that apply</span></div>
+      <div class="tile-grid tile-grid--4" id="llm-grid">
+        <div class="tile" data-group="llms" data-multi="true" data-value="Claude">
+          <span class="tile__icon">🤖</span>
+          <span class="tile__label">Claude</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="ChatGPT">
+          <span class="tile__icon">💬</span>
+          <span class="tile__label">ChatGPT</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="Gemini">
+          <span class="tile__icon">✨</span>
+          <span class="tile__label">Gemini</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="Llama">
+          <span class="tile__icon">🦙</span>
+          <span class="tile__label">Llama</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="Mistral">
+          <span class="tile__icon">💨</span>
+          <span class="tile__label">Mistral</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="MiniMax">
+          <span class="tile__icon">⚡</span>
+          <span class="tile__label">MiniMax</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="Qwen">
+          <span class="tile__icon">🔷</span>
+          <span class="tile__label">Qwen</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="Gemma">
+          <span class="tile__icon">💎</span>
+          <span class="tile__label">Gemma</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="Kimi K2">
+          <span class="tile__icon">🌙</span>
+          <span class="tile__label">Kimi K2</span>
+        </div>
+        <div class="tile" data-group="llms" data-multi="true" data-value="DeepSeek">
+          <span class="tile__icon">🔍</span>
+          <span class="tile__label">DeepSeek</span>
+        </div>
+        <div class="tile tile--muted" data-group="llms" data-multi="true" data-value="Not sure yet">
+          <span class="tile__icon">🤷</span>
+          <span class="tile__label">Not sure yet</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="error-1" class="step-error"></div>
+
+    <div class="step-actions">
+      <div></div>
+      <button class="btn-next" id="next-1">Continue →</button>
+    </div>
+  </div>
+
+
+  <!-- ══ STEP 2 — YOUR GOALS ══ -->
+  <div id="step-2" class="step-panel">
+    <div style="margin-bottom:32px;">
+      <div class="step-eyebrow">// STEP 02 — MISSION OBJECTIVES</div>
+      <h1 class="step-title">What do you want to automate?</h1>
+      <p class="step-sub">Select everything you want the system working on. Be ambitious — you can focus later.</p>
+    </div>
+
+    <!-- Goals -->
+    <div class="form-section">
+      <div class="form-label">What do you want to do? <span class="form-label-hint">Select all that apply</span></div>
+      <div class="tile-grid tile-grid--3" id="goals-grid">
+        <div class="tile" data-group="goals" data-multi="true" data-value="Automate Sales">
+          <span class="tile__icon">💰</span>
+          <span class="tile__label">Automate Sales</span>
+        </div>
+        <div class="tile" data-group="goals" data-multi="true" data-value="Automate Marketing">
+          <span class="tile__icon">📣</span>
+          <span class="tile__label">Automate Marketing</span>
+        </div>
+        <div class="tile" data-group="goals" data-multi="true" data-value="Automate the Entire Business">
+          <span class="tile__icon">🏢</span>
+          <span class="tile__label">Automate the Entire Business</span>
+        </div>
+        <div class="tile" data-group="goals" data-multi="true" data-value="Content Automation">
+          <span class="tile__icon">🎬</span>
+          <span class="tile__label">Content Automation</span>
+        </div>
+        <div class="tile" data-group="goals" data-multi="true" data-value="Website Design">
+          <span class="tile__icon">🌐</span>
+          <span class="tile__label">Website Design</span>
+        </div>
+        <div class="tile" data-group="goals" data-multi="true" data-value="Mobile App Engineering">
+          <span class="tile__icon">📱</span>
+          <span class="tile__label">Mobile App Engineering</span>
+        </div>
+        <div class="tile" data-group="goals" data-multi="true" data-value="SaaS Product Development">
+          <span class="tile__icon">🚀</span>
+          <span class="tile__label">SaaS Product Development</span>
+        </div>
+        <div class="tile" data-group="goals" data-multi="true" data-value="Customer Service Automation">
+          <span class="tile__icon">🎧</span>
+          <span class="tile__label">Customer Service Automation</span>
+        </div>
+        <div class="tile" data-group="goals" data-multi="true" data-value="Data Analysis">
+          <span class="tile__icon">📊</span>
+          <span class="tile__label">Data Analysis</span>
+        </div>
+        <div class="tile tile--distinct" data-group="goals" data-multi="true" data-value="Not sure yet — schedule a consultation" style="grid-column: 1 / -1;">
+          <span class="tile__icon">🗓️</span>
+          <span class="tile__label">Not sure yet — schedule a consultation</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Timeline -->
+    <div class="form-section">
+      <div class="form-label">When do you want this running?</div>
+      <div class="tile-grid tile-grid--3" id="timeline-grid">
+        <div class="tile" data-group="timeline" data-value="Today">
+          <span class="tile__icon">⚡</span>
+          <span class="tile__label">Today</span>
+        </div>
+        <div class="tile" data-group="timeline" data-value="This Week">
+          <span class="tile__icon">📅</span>
+          <span class="tile__label">This Week</span>
+        </div>
+        <div class="tile" data-group="timeline" data-value="This Month">
+          <span class="tile__icon">🗓️</span>
+          <span class="tile__label">This Month</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="error-2" class="step-error"></div>
+
+    <div class="step-actions">
+      <button class="btn-back" id="back-2">← Back</button>
+      <button class="btn-next" id="next-2">Continue →</button>
+    </div>
+  </div>
+
+
+  <!-- ══ STEP 3 — ABOUT YOU ══ -->
+  <div id="step-3" class="step-panel">
+    <div style="margin-bottom:32px;">
+      <div class="step-eyebrow">// STEP 03 — OPERATOR PROFILE</div>
+      <h1 class="step-title">Tell us about yourself</h1>
+      <p class="step-sub">Help us match you with the right onboarding path and support level.</p>
+    </div>
+
+    <!-- Plan selection -->
+    <div class="form-section">
+      <div class="form-label">Which plan?</div>
+      <div class="plan-grid" id="plan-grid">
+        <div class="plan-card" data-group="plan" data-value="early-adopter">
+          <div class="plan-card__name">Early Adopter</div>
+          <div class="plan-card__price"><sup>$</sup>20<span style="font-size:0.75rem;font-weight:400;color:#555">/mo</span></div>
+          <div class="plan-card__note">Cancel anytime · Founding rate locked</div>
+        </div>
+        <div class="plan-card" data-group="plan" data-value="full-ownership">
+          <div class="plan-card__name">Full Ownership</div>
+          <div class="plan-card__price"><sup>$</sup>2,500<span style="font-size:0.65rem;font-weight:400;color:#555"> once</span></div>
+          <div class="plan-card__note">Full source code · 1 yr updates</div>
+        </div>
+        <div class="plan-card" data-group="plan" data-value="payment-plan">
+          <div class="plan-card__name">Payment Plan</div>
+          <div class="plan-card__price"><sup>$</sup>197<span style="font-size:0.75rem;font-weight:400;color:#555">/mo</span></div>
+          <div class="plan-card__note">× 14 months · Same as ownership</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Technical level -->
+    <div class="form-section">
+      <div class="form-label">How technical are you?</div>
+      <div class="tile-grid tile-grid--3" id="technical-grid">
+        <div class="tile" data-group="technical" data-value="I code">
+          <span class="tile__icon">💻</span>
+          <span class="tile__label">I code</span>
+        </div>
+        <div class="tile" data-group="technical" data-value="I can follow instructions">
+          <span class="tile__icon">📋</span>
+          <span class="tile__label">I can follow instructions</span>
+        </div>
+        <div class="tile" data-group="technical" data-value="I need everything done for me">
+          <span class="tile__icon">🤝</span>
+          <span class="tile__label">I need everything done for me</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Team size -->
+    <div class="form-section">
+      <div class="form-label">Team size</div>
+      <div class="tile-grid tile-grid--3" id="team-grid">
+        <div class="tile" data-group="team" data-value="Just me">
+          <span class="tile__icon">🧑</span>
+          <span class="tile__label">Just me</span>
+        </div>
+        <div class="tile" data-group="team" data-value="2–5 people">
+          <span class="tile__icon">👥</span>
+          <span class="tile__label">2–5 people</span>
+        </div>
+        <div class="tile" data-group="team" data-value="Bigger">
+          <span class="tile__icon">🏢</span>
+          <span class="tile__label">Bigger</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI experience -->
+    <div class="form-section">
+      <div class="form-label">AI experience level</div>
+      <div class="tile-grid tile-grid--2" id="aiexp-grid">
+        <div class="tile" data-group="aiexp" data-value="Using AI daily">
+          <span class="tile__icon">🔥</span>
+          <span class="tile__label">Using AI daily</span>
+        </div>
+        <div class="tile" data-group="aiexp" data-value="Tried ChatGPT">
+          <span class="tile__icon">💬</span>
+          <span class="tile__label">Tried ChatGPT</span>
+        </div>
+        <div class="tile" data-group="aiexp" data-value="Brand new to AI">
+          <span class="tile__icon">🌱</span>
+          <span class="tile__label">Brand new to AI</span>
+        </div>
+        <div class="tile" data-group="aiexp" data-value="Running AI in production">
+          <span class="tile__icon">⚙️</span>
+          <span class="tile__label">Running AI in production</span>
+        </div>
+      </div>
+    </div>
+
+    <div id="error-3" class="step-error"></div>
+
+    <div class="step-actions">
+      <button class="btn-back" id="back-3">← Back</button>
+      <button class="btn-next" id="next-3">Continue →</button>
+    </div>
+  </div>
+
+
+  <!-- ══ STEP 4 — GET STARTED ══ -->
+  <div id="step-4" class="step-panel">
+    <div style="margin-bottom:32px;">
+      <div class="step-eyebrow">// STEP 04 — DEPLOY</div>
+      <h1 class="step-title">Last step. Let's get you running.</h1>
+      <p class="step-sub">We'll send your personalised setup guide and onboarding details to this address.</p>
+    </div>
+
+    <form id="setup-form" action="https://formspree.io/f/YOUR_FORMSPREE_ID" method="POST">
+      <!-- Hidden fields — populated by JS on submit -->
+      <input type="hidden" name="_subject" value="New Setup Submission — OpenClaw for Entrepreneurs" />
+      <input type="hidden" name="hardware"         id="f-hardware" />
+      <input type="hidden" name="ram"              id="f-ram" />
+      <input type="hidden" name="llms"             id="f-llms" />
+      <input type="hidden" name="goals"            id="f-goals" />
+      <input type="hidden" name="timeline"         id="f-timeline" />
+      <input type="hidden" name="plan"             id="f-plan" />
+      <input type="hidden" name="technical_level"  id="f-technical" />
+      <input type="hidden" name="team_size"        id="f-team" />
+      <input type="hidden" name="ai_experience"    id="f-aiexp" />
+
+      <!-- Visible contact fields -->
+      <div class="input-group">
+        <label class="input-label" for="contact-name">Name</label>
+        <input class="input-field" type="text" id="contact-name" name="name" placeholder="Your full name" autocomplete="name" required />
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="contact-email">Email</label>
+        <input class="input-field" type="email" id="contact-email" name="email" placeholder="your@email.com" autocomplete="email" required />
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="contact-phone">Phone <span class="optional">(optional)</span></label>
+        <input class="input-field" type="tel" id="contact-phone" name="phone" placeholder="+1 (555) 000-0000" autocomplete="tel" />
+      </div>
+
+      <div class="input-group">
+        <label class="input-label" for="contact-source">How did you find us?</label>
+        <select class="select-field" id="contact-source" name="source">
+          <option value="" disabled selected>Select one…</option>
+          <option value="Google">Google</option>
+          <option value="Twitter/X">Twitter / X</option>
+          <option value="YouTube">YouTube</option>
+          <option value="Friend/Referral">Friend / Referral</option>
+          <option value="Discord">Discord</option>
+          <option value="Reddit">Reddit</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+
+      <div id="error-4" class="step-error"></div>
+
+      <div style="margin-top:28px;">
+        <button type="submit" class="btn-submit" id="submit-btn">
+          Complete Setup →
+        </button>
+        <p style="font-size:0.75rem;color:#555;text-align:center;margin-top:10px;">
+          No spam. No upsell sequence. We'll follow up within 24 hours.
+        </p>
+      </div>
+    </form>
+
+    <!-- ─── BOOKING CALL CARDS ─── -->
+    <div class="booking-section">
+      <p class="booking-section__heading">Want hands-on help getting set up?</p>
+      <div class="booking-grid">
+        <a href="#book-call-30" class="booking-card">
+          <div class="booking-card__badge">⚡ Quick Setup</div>
+          <div class="booking-card__title">30-Minute Setup Call</div>
+          <div class="booking-card__price">$200</div>
+          <p class="booking-card__desc">
+            Get your Mac Mini configured and Marcus running live on a screenshare. Walk away with it working.
+          </p>
+          <div class="booking-card__cta">Book this call →</div>
+        </a>
+        <a href="#book-call-60" class="booking-card">
+          <div class="booking-card__badge">🚀 Deep Dive</div>
+          <div class="booking-card__title">1-Hour Deep Dive Call</div>
+          <div class="booking-card__price">$400</div>
+          <p class="booking-card__desc">
+            Full system walkthrough, custom skill setup, and a strategy session for your specific business goals.
+          </p>
+          <div class="booking-card__cta">Book this call →</div>
+        </a>
+      </div>
+    </div>
+
+    <div class="step-actions" style="border-top:none;padding-top:0;margin-top:28px;">
+      <button class="btn-back" id="back-4">← Back</button>
+      <div></div>
+    </div>
+  </div>
+
+  <!-- ══ SUCCESS STATE ══ -->
+  <div class="setup-success" id="setup-success">
+    <div class="setup-success__icon">✅</div>
+    <h2>You're all set.</h2>
+    <p>
+      Check your inbox — your personalised setup guide is on its way.<br><br>
+      We'll follow up within 24 hours with next steps based on your configuration.<br><br>
+      <a href="index.html" style="color:#9d5cf6;">← Return to openclawforentrepreneurs.com</a>
+    </p>
+  </div>
+
+</main>
+
+
+<!-- ══ PARTICLES JS ══ -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<script>
+particlesJS('particles-js', {
+  particles: {
+    number: { value: 60, density: { enable: true, value_area: 800 } },
+    color: { value: '#7c3aed' },
+    shape: { type: 'circle' },
+    opacity: { value: 0.35, random: true },
+    size: { value: 2.2, random: true },
+    line_linked: {
+      enable: true, distance: 140,
+      color: '#7c3aed', opacity: 0.18, width: 1
+    },
+    move: {
+      enable: true, speed: 1, direction: 'none',
+      random: true, straight: false, out_mode: 'out', bounce: false
+    }
+  },
+  interactivity: {
+    detect_on: 'window',
+    events: {
+      onhover: { enable: true, mode: 'repulse' },
+      onclick: { enable: false },
+      resize: true
+    },
+    modes: { repulse: { distance: 100, duration: 0.4 } }
+  },
+  retina_detect: true
+});
+</script>
+
+
+<!-- ══ SETUP LOGIC ══ -->
+<script>
+(function () {
+  'use strict';
+
+  /* ── State ─────────────────────────────────────────────────── */
+  var state = {
+    hardware:  '',
+    ram:       '',
+    llms:      [],
+    goals:     [],
+    timeline:  '',
+    plan:      '',
+    technical: '',
+    team:      '',
+    aiexp:     ''
+  };
+
+  var currentStep = 1;
+
+  /* ── Tile interaction ───────────────────────────────────────── */
+  function setupTiles(containerId) {
+    var container = document.getElementById(containerId);
+    if (!container) return;
+    container.addEventListener('click', function (e) {
+      var tile = e.target.closest('.tile[data-group]');
+      if (!tile) return;
+
+      var group = tile.dataset.group;
+      var value = tile.dataset.value;
+      var multi = tile.dataset.multi === 'true';
+
+      if (multi) {
+        // Toggle multi-select
+        tile.classList.toggle('selected');
+        if (tile.classList.contains('selected')) {
+          if (!state[group]) state[group] = [];
+          if (state[group].indexOf(value) === -1) state[group].push(value);
+        } else {
+          state[group] = state[group].filter(function (v) { return v !== value; });
+        }
+      } else {
+        // Single select — deselect siblings
+        var siblings = container.querySelectorAll('.tile[data-group="' + group + '"]');
+        siblings.forEach(function (s) { s.classList.remove('selected'); });
+        tile.classList.add('selected');
+        state[group] = value;
+
+        // Hardware → show/hide RAM follow-up
+        if (group === 'hardware') {
+          var ramSection = document.getElementById('ram-followup');
+          if (value !== 'None yet') {
+            ramSection.style.display = 'block';
+          } else {
+            ramSection.style.display = 'none';
+            state.ram = '';
+            document.querySelectorAll('#ram-grid .tile').forEach(function (t) { t.classList.remove('selected'); });
+          }
+        }
+      }
+    });
+  }
+
+  function setupPlanCards() {
+    var grid = document.getElementById('plan-grid');
+    if (!grid) return;
+    grid.addEventListener('click', function (e) {
+      var card = e.target.closest('.plan-card[data-group]');
+      if (!card) return;
+      document.querySelectorAll('.plan-card').forEach(function (c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      state.plan = card.dataset.value;
+    });
+  }
+
+  /* ── Pre-select plan from URL param ────────────────────────── */
+  function preselectPlan() {
+    var params = new URLSearchParams(window.location.search);
+    var plan = params.get('plan');
+    if (!plan) return;
+    var card = document.querySelector('.plan-card[data-value="' + plan + '"]');
+    if (card) {
+      document.querySelectorAll('.plan-card').forEach(function (c) { c.classList.remove('selected'); });
+      card.classList.add('selected');
+      state.plan = plan;
+    }
+  }
+
+  /* ── Step transitions ───────────────────────────────────────── */
+  function showStep(n, direction) {
+    var from = document.getElementById('step-' + currentStep);
+    var to   = document.getElementById('step-' + n);
+    if (!from || !to) return;
+
+    var slideOut = direction === 'forward' ? '-28px' : '28px';
+    var slideIn  = direction === 'forward' ?  '28px' : '-28px';
+
+    // Animate out
+    from.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+    from.style.opacity    = '0';
+    from.style.transform  = 'translateX(' + slideOut + ')';
+
+    setTimeout(function () {
+      from.classList.remove('active');
+      from.style.display   = 'none';
+      from.style.opacity   = '';
+      from.style.transform = '';
+      from.style.transition = '';
+
+      to.style.display   = 'block';
+      to.style.opacity   = '0';
+      to.style.transform = 'translateX(' + slideIn + ')';
+
+      // Force reflow
+      to.offsetHeight; // eslint-disable-line no-unused-expressions
+
+      to.style.transition = 'opacity 0.26s ease, transform 0.26s ease';
+      to.style.opacity    = '1';
+      to.style.transform  = 'translateX(0)';
+
+      to.classList.add('active');
+      currentStep = n;
+      updateProgress(n);
+
+      setTimeout(function () {
+        to.style.transition = '';
+      }, 280);
+
+      // Scroll to top of form
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }, 220);
+  }
+
+  /* ── Progress indicator ─────────────────────────────────────── */
+  function updateProgress(step) {
+    for (var i = 1; i <= 4; i++) {
+      var ps = document.getElementById('pstep-' + i);
+      if (!ps) continue;
+      ps.classList.remove('active', 'done');
+      if (i < step)  ps.classList.add('done');
+      if (i === step) ps.classList.add('active');
+    }
+    // Animate the connecting line
+    var fill = document.getElementById('progress-line-fill');
+    if (fill) {
+      var pct = ((step - 1) / 3) * 75; // 75% is the full span (left 12.5% to right 12.5%)
+      fill.style.width = pct + '%';
+    }
+  }
+
+  /* ── Validation ─────────────────────────────────────────────── */
+  function showError(stepNum, msg) {
+    var el = document.getElementById('error-' + stepNum);
+    if (!el) return;
+    el.textContent = msg;
+    el.style.display = 'block';
+    setTimeout(function () { el.style.display = 'none'; }, 4000);
+  }
+
+  function validateStep1() {
+    if (!state.hardware) {
+      showError(1, 'Please select your hardware to continue.');
+      return false;
+    }
+    if (state.hardware !== 'None yet' && !state.ram) {
+      showError(1, 'Please select your RAM size to continue.');
+      return false;
+    }
+    if (!state.llms || state.llms.length === 0) {
+      showError(1, 'Please select at least one LLM to continue.');
+      return false;
+    }
+    return true;
+  }
+
+  function validateStep2() {
+    if (!state.goals || state.goals.length === 0) {
+      showError(2, 'Please select at least one goal to continue.');
+      return false;
+    }
+    if (!state.timeline) {
+      showError(2, 'Please select your target timeline to continue.');
+      return false;
+    }
+    return true;
+  }
+
+  function validateStep3() {
+    if (!state.plan) {
+      showError(3, 'Please select a plan to continue.');
+      return false;
+    }
+    if (!state.technical) {
+      showError(3, 'Please select your technical level.');
+      return false;
+    }
+    if (!state.team) {
+      showError(3, 'Please select your team size.');
+      return false;
+    }
+    if (!state.aiexp) {
+      showError(3, 'Please select your AI experience level.');
+      return false;
+    }
+    return true;
+  }
+
+  /* ── Wire nav buttons ───────────────────────────────────────── */
+  document.getElementById('next-1').addEventListener('click', function () {
+    if (validateStep1()) showStep(2, 'forward');
+  });
+
+  document.getElementById('back-2').addEventListener('click', function () {
+    showStep(1, 'backward');
+  });
+  document.getElementById('next-2').addEventListener('click', function () {
+    if (validateStep2()) showStep(3, 'forward');
+  });
+
+  document.getElementById('back-3').addEventListener('click', function () {
+    showStep(2, 'backward');
+  });
+  document.getElementById('next-3').addEventListener('click', function () {
+    if (validateStep3()) showStep(4, 'forward');
+  });
+
+  document.getElementById('back-4').addEventListener('click', function () {
+    showStep(3, 'backward');
+  });
+
+  /* ── Form submission ────────────────────────────────────────── */
+  document.getElementById('setup-form').addEventListener('submit', async function (e) {
+    e.preventDefault();
+
+    var name  = document.getElementById('contact-name').value.trim();
+    var email = document.getElementById('contact-email').value.trim();
+
+    if (!name) { showError(4, 'Please enter your name.'); return; }
+    if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      showError(4, 'Please enter a valid email address.');
+      return;
+    }
+
+    // Populate hidden fields
+    document.getElementById('f-hardware').value  = state.hardware;
+    document.getElementById('f-ram').value       = state.ram;
+    document.getElementById('f-llms').value      = state.llms.join(', ');
+    document.getElementById('f-goals').value     = state.goals.join(', ');
+    document.getElementById('f-timeline').value  = state.timeline;
+    document.getElementById('f-plan').value      = state.plan;
+    document.getElementById('f-technical').value = state.technical;
+    document.getElementById('f-team').value      = state.team;
+    document.getElementById('f-aiexp').value     = state.aiexp;
+
+    var btn = document.getElementById('submit-btn');
+    btn.textContent = 'Sending…';
+    btn.disabled = true;
+
+    var action = this.getAttribute('action');
+
+    // Dev fallback — Formspree ID not yet replaced
+    if (action.includes('YOUR_FORMSPREE_ID')) {
+      try {
+        var entry = {
+          name: name, email: email,
+          phone: document.getElementById('contact-phone').value,
+          source: document.getElementById('contact-source').value,
+          hardware: state.hardware, ram: state.ram,
+          llms: state.llms, goals: state.goals,
+          timeline: state.timeline, plan: state.plan,
+          technical: state.technical, team: state.team,
+          aiexp: state.aiexp,
+          ts: new Date().toISOString()
+        };
+        var list = JSON.parse(localStorage.getItem('oc_setup_leads') || '[]');
+        list.push(entry);
+        localStorage.setItem('oc_setup_leads', JSON.stringify(list));
+      } catch (err) { /* ignore */ }
+      showSuccess();
+      return;
+    }
+
+    try {
+      var res = await fetch(action, {
+        method: 'POST',
+        body: new FormData(this),
+        headers: { Accept: 'application/json' }
+      });
+
+      if (res.ok) {
+        showSuccess();
+      } else {
+        btn.textContent = 'Complete Setup →';
+        btn.disabled = false;
+        showError(4, 'Something went wrong. Please try again.');
+      }
+    } catch (err) {
+      btn.textContent = 'Complete Setup →';
+      btn.disabled = false;
+      showError(4, 'Network error. Please check your connection and try again.');
+    }
+  });
+
+  function showSuccess() {
+    var step4 = document.getElementById('step-4');
+    var progress = document.getElementById('setup-progress');
+    var success = document.getElementById('setup-success');
+
+    step4.style.opacity = '0';
+    step4.style.transition = 'opacity 0.3s ease';
+
+    setTimeout(function () {
+      step4.style.display = 'none';
+      progress.style.display = 'none';
+      success.style.display = 'block';
+      success.style.opacity = '0';
+      success.style.transition = 'opacity 0.35s ease';
+      success.offsetHeight; // reflow
+      success.style.opacity = '1';
+    }, 300);
+  }
+
+  /* ── Init tile groups ───────────────────────────────────────── */
+  setupTiles('hardware-grid');
+  setupTiles('ram-grid');
+  setupTiles('llm-grid');
+  setupTiles('goals-grid');
+  setupTiles('timeline-grid');
+  setupTiles('technical-grid');
+  setupTiles('team-grid');
+  setupTiles('aiexp-grid');
+  setupPlanCards();
+  preselectPlan();
+
+  /* ── Init progress bar ─────────────────────────────────────── */
+  updateProgress(1);
+
+})();
+</script>
+
+</body>
+</html>
