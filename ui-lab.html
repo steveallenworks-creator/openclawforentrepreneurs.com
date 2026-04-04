@@ -188,9 +188,9 @@
     .lab-stars,
     .lab-stars::before,
     .lab-stars::after,
-    .aurora-layer,
-    .spotlight-layer,
-    .ripple-layer {
+    .lab-aurora,
+    .lab-vignette,
+    .lab-canvas {
       position: fixed;
       inset: 0;
       pointer-events: none;
@@ -211,9 +211,9 @@
     .lab-stars::before {
       opacity: 0.92;
       background-image:
-        radial-gradient(circle, rgba(255,255,255,0.88) 0.85px, transparent 1.2px),
-        radial-gradient(circle, rgba(196,181,253,0.72) 0.75px, transparent 1.15px),
-        radial-gradient(circle, rgba(255,255,255,0.52) 0.65px, transparent 1px);
+        radial-gradient(circle, rgba(255,255,255,0.90) 0.85px, transparent 1.2px),
+        radial-gradient(circle, rgba(196,181,253,0.74) 0.78px, transparent 1.18px),
+        radial-gradient(circle, rgba(255,255,255,0.50) 0.66px, transparent 1.02px);
       background-size: 150px 150px, 220px 220px, 320px 320px;
       background-position: 0 0, 70px 110px, 140px 40px;
       animation: driftStars 48s linear infinite;
@@ -221,70 +221,37 @@
     .lab-stars::after {
       opacity: 0.42;
       background-image:
-        radial-gradient(circle, rgba(124,58,237,0.5) 1px, transparent 1.45px),
-        radial-gradient(circle, rgba(255,255,255,0.24) 0.8px, transparent 1.2px);
+        radial-gradient(circle, rgba(124,58,237,0.48) 1px, transparent 1.45px),
+        radial-gradient(circle, rgba(255,255,255,0.22) 0.8px, transparent 1.2px);
       background-size: 360px 360px, 480px 480px;
       background-position: 40px 80px, 200px 120px;
       animation: driftStarsReverse 72s linear infinite;
     }
-    .aurora-layer,
-    .spotlight-layer,
-    .ripple-layer {
+    .lab-aurora,
+    .lab-vignette,
+    .lab-canvas {
       z-index: 1;
-      opacity: 0;
-      transition: opacity 0.3s ease;
     }
-    .aurora-layer {
+    .lab-aurora {
+      opacity: 0.28;
       background:
-        radial-gradient(circle 240px at var(--mx, 50%) var(--my, 50%), rgba(124,58,237,0.26), transparent 60%),
-        radial-gradient(circle 320px at calc(var(--mx, 50%) - 18%) calc(var(--my, 50%) + 12%), rgba(79,70,229,0.18), transparent 62%),
-        radial-gradient(circle at 20% 20%, rgba(79,70,229,0.12), transparent 24%),
-        radial-gradient(circle at 80% 35%, rgba(168,85,247,0.10), transparent 22%);
-      filter: blur(24px);
+        radial-gradient(circle 320px at calc(var(--mx, 50) * 1px) calc(var(--my, 50) * 1px), rgba(124,58,237,0.20), transparent 65%),
+        radial-gradient(circle 420px at calc(var(--mx, 50) * 1px - 12%) calc(var(--my, 50) * 1px + 8%), rgba(79,70,229,0.14), transparent 68%);
+      filter: blur(36px);
+      transition: opacity 0.28s ease;
     }
-    .spotlight-layer {
-      background:
-        radial-gradient(circle 140px at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.18), transparent 55%),
-        radial-gradient(circle 280px at calc(var(--mx, 50%) + 3%) calc(var(--my, 50%) + 2%), rgba(124,58,237,0.22), transparent 62%);
-      mix-blend-mode: screen;
+    body[data-variant="constellation"] .lab-aurora { opacity: 0.12; }
+    body[data-variant="aurora"] .lab-aurora { opacity: 0.48; }
+    body[data-variant="magnetic"] .lab-aurora { opacity: 0.22; }
+    body[data-variant="swarm"] .lab-aurora { opacity: 0.18; }
+    .lab-canvas {
+      width: 100%;
+      height: 100%;
+      opacity: 0.98;
     }
-    .ripple-layer::before,
-    .ripple-layer::after {
-      content: "";
-      position: absolute;
-      left: var(--mx, 50%);
-      top: var(--my, 50%);
-      border-radius: 999px;
-      transform: translate(-50%, -50%);
-      opacity: 0.6;
-      animation: pulseRing 2.8s ease-out infinite;
-    }
-    .ripple-layer::before {
-      width: 170px;
-      height: 170px;
-      border: 1px solid rgba(168,85,247,0.28);
-      box-shadow: 0 0 42px rgba(124,58,237,0.12);
-    }
-    .ripple-layer::after {
-      width: 310px;
-      height: 310px;
-      border: 1px solid rgba(124,58,237,0.14);
-      animation-delay: 0.6s;
-    }
-    body[data-variant="constellation"] .aurora-layer,
-    body[data-variant="constellation"] .spotlight-layer,
-    body[data-variant="constellation"] .ripple-layer {
-      opacity: 0;
-    }
-    body[data-variant="aurora"] .aurora-layer {
-      opacity: 1;
-    }
-    body[data-variant="spotlight"] .spotlight-layer {
-      opacity: 1;
-    }
-    body[data-variant="ripple"] .ripple-layer,
-    body[data-variant="ripple"] .spotlight-layer {
-      opacity: 1;
+    .lab-vignette {
+      background: radial-gradient(ellipse 92% 86% at 50% 50%, transparent 36%, rgba(10,10,10,0.82) 100%);
+      z-index: 2;
     }
     @keyframes driftStars {
       from { transform: translate3d(0, 0, 0); }
@@ -293,11 +260,6 @@
     @keyframes driftStarsReverse {
       from { transform: translate3d(0, 0, 0); }
       to { transform: translate3d(24px, 20px, 0); }
-    }
-    @keyframes pulseRing {
-      0% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.48; }
-      70% { transform: translate(-50%, -50%) scale(1.06); opacity: 0.18; }
-      100% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.04; }
     }
     @media (max-width: 1100px) {
       .lab-panel {
@@ -328,9 +290,9 @@
 </head>
 <body data-variant="constellation">
   <div class="lab-stars" aria-hidden="true"></div>
-  <div id="aurora-layer" class="aurora-layer"></div>
-  <div id="spotlight-layer" class="spotlight-layer"></div>
-  <div id="ripple-layer" class="ripple-layer"></div>
+  <div class="lab-aurora" aria-hidden="true"></div>
+  <canvas class="lab-canvas" id="lab-particles" aria-hidden="true"></canvas>
+  <div class="lab-vignette" aria-hidden="true"></div>
 
   <nav class="nav">
     <div class="nav__logo">
@@ -353,19 +315,19 @@
       <div class="lab-variants">
         <button class="lab-variant lab-variant--active" data-variant="constellation">
           <span class="lab-variant__name">Constellation</span>
-          <span class="lab-variant__desc">Current site feel. Lines stay visible; ring/dot particles are effectively invisible.</span>
+          <span class="lab-variant__desc">Visible nodes and connecting lines. Cursor reorganizes the local network.</span>
         </button>
         <button class="lab-variant" data-variant="aurora">
           <span class="lab-variant__name">Aurora Drift</span>
-          <span class="lab-variant__desc">Soft mouse-following glows layered over the same star field.</span>
+          <span class="lab-variant__desc">Denser flow field. Particles sweep and arc past the cursor like a current.</span>
         </button>
-        <button class="lab-variant" data-variant="spotlight">
-          <span class="lab-variant__name">Magnetic Spotlight</span>
-          <span class="lab-variant__desc">A brighter focal beam follows the cursor for a more tactile premium feel.</span>
+        <button class="lab-variant" data-variant="magnetic">
+          <span class="lab-variant__name">Magnetic Well</span>
+          <span class="lab-variant__desc">A stronger attraction basin. Stars cluster, overshoot, and spring back.</span>
         </button>
-        <button class="lab-variant" data-variant="ripple">
-          <span class="lab-variant__name">Ripple Field</span>
-          <span class="lab-variant__desc">Concentric rings track the cursor while the stars subtly repulse away.</span>
+        <button class="lab-variant" data-variant="swarm">
+          <span class="lab-variant__name">Swarm Field</span>
+          <span class="lab-variant__desc">Brighter agents lead and the rest route behind them in a coordinated stream.</span>
         </button>
       </div>
       <div class="lab-links">
@@ -429,11 +391,198 @@
       const root = document.documentElement;
       const body = document.body;
       const buttons = Array.from(document.querySelectorAll('.lab-variant'));
+      const canvas = document.getElementById('lab-particles');
+      const labShell = document.querySelector('.lab-shell');
       let currentVariant = body.getAttribute('data-variant') || 'constellation';
 
+      function createParticleField(canvas, getVariant) {
+        if (!canvas || !canvas.getContext) return null;
+        const ctx = canvas.getContext('2d');
+        if (!ctx) return null;
+        const particles = [];
+        const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        let width = 0;
+        let height = 0;
+        let rafId = null;
+
+        function variant() {
+          return getVariant();
+        }
+
+        function resize() {
+          const rect = canvas.getBoundingClientRect();
+          width = Math.max(1, rect.width || window.innerWidth);
+          height = Math.max(1, rect.height || window.innerHeight);
+          canvas.width = Math.round(width * dpr);
+          canvas.height = Math.round(height * dpr);
+          ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+          seed();
+        }
+
+        function seed() {
+          const cfg = variant();
+          particles.length = 0;
+          for (let i = 0; i < cfg.count; i += 1) {
+            particles.push({
+              x: Math.random() * width,
+              y: Math.random() * height,
+              vx: (Math.random() - 0.5) * cfg.seedVelocity,
+              vy: (Math.random() - 0.5) * cfg.seedVelocity,
+              baseSize: cfg.minSize + Math.random() * (cfg.maxSize - cfg.minSize),
+              depth: 0.42 + Math.random() * 0.95,
+              twinkle: Math.random() * Math.PI * 2,
+              leader: Math.random() < (cfg.leaderRate || 0) ? 1 : 0
+            });
+          }
+        }
+
+        function setPointer(x, y, active) {
+          pointer.targetX = x;
+          pointer.targetY = y;
+          if (!pointer.active) {
+            pointer.x = x;
+            pointer.y = y;
+          }
+          pointer.active = active;
+        }
+
+        function updatePointer() {
+          pointer.x += (pointer.targetX - pointer.x) * 0.16;
+          pointer.y += (pointer.targetY - pointer.y) * 0.16;
+        }
+
+        function stepParticle(p, cfg, time) {
+          p.twinkle += 0.009 * cfg.twinkleSpeed;
+          p.vx *= cfg.friction;
+          p.vy *= cfg.friction;
+          p.vx += (Math.sin((p.y + time * 0.018) * 0.01 * cfg.flowScale) * 0.0028 + (Math.random() - 0.5) * 0.0009) * cfg.driftForce;
+          p.vy += (Math.cos((p.x - time * 0.014) * 0.01 * cfg.flowScale) * 0.0028 + (Math.random() - 0.5) * 0.0009) * cfg.driftForce;
+          if (p.leader) {
+            p.vx += Math.sin(time * 0.0006 + p.twinkle) * 0.006 * cfg.leaderBias;
+            p.vy += Math.cos(time * 0.0005 + p.twinkle) * 0.006 * cfg.leaderBias;
+          }
+          const dx = pointer.x - p.x;
+          const dy = pointer.y - p.y;
+          const dist = Math.hypot(dx, dy) || 0.001;
+          const radius = cfg.radius * p.depth;
+          if (pointer.active || cfg.alwaysInteractive) {
+            if (dist < radius) {
+              const force = 1 - dist / radius;
+              const nx = dx / dist;
+              const ny = dy / dist;
+              p.vx += nx * cfg.attract * force * p.depth;
+              p.vy += ny * cfg.attract * force * p.depth;
+              p.vx += -ny * cfg.swirl * force * p.depth;
+              p.vy += nx * cfg.swirl * force * p.depth;
+              p.vx -= nx * cfg.repel * force * p.depth;
+              p.vy -= ny * cfg.repel * force * p.depth;
+            }
+          }
+          p.x += p.vx;
+          p.y += p.vy;
+          if (p.x < -30) p.x = width + 30;
+          if (p.x > width + 30) p.x = -30;
+          if (p.y < -30) p.y = height + 30;
+          if (p.y > height + 30) p.y = -30;
+        }
+
+        function draw(time) {
+          const cfg = variant();
+          ctx.clearRect(0, 0, width, height);
+          updatePointer();
+          particles.forEach(function (p) {
+            stepParticle(p, cfg, time || 0);
+          });
+          for (let i = 0; i < particles.length; i += 1) {
+            const a = particles[i];
+            for (let j = i + 1; j < particles.length; j += 1) {
+              const b = particles[j];
+              const dx = a.x - b.x;
+              const dy = a.y - b.y;
+              const dist = Math.hypot(dx, dy);
+              if (dist > cfg.lineDistance) continue;
+              const alpha = (1 - dist / cfg.lineDistance) * cfg.lineOpacity * Math.min(a.depth, b.depth) * (a.leader || b.leader ? 1.2 : 1);
+              if (alpha <= 0.01) continue;
+              ctx.beginPath();
+              ctx.strokeStyle = 'rgba(' + cfg.lineColor.join(',') + ',' + alpha.toFixed(3) + ')';
+              ctx.lineWidth = cfg.lineWidth;
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+              ctx.stroke();
+            }
+          }
+          particles.forEach(function (p) {
+            const pulse = 0.66 + 0.34 * Math.sin(p.twinkle + (time || 0) * 0.0012);
+            const size = p.baseSize * p.depth * (p.leader ? 1.45 : 1);
+            const alpha = cfg.nodeOpacity * pulse;
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(' + cfg.glowColor.join(',') + ',' + (alpha * (p.leader ? 0.18 : 0.1)).toFixed(3) + ')';
+            ctx.arc(p.x, p.y, size * (p.leader ? 5.2 : 4.2), 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.fillStyle = 'rgba(' + cfg.nodeColor.join(',') + ',' + alpha.toFixed(3) + ')';
+            ctx.arc(p.x, p.y, Math.max(0.55, size), 0, Math.PI * 2);
+            ctx.fill();
+          });
+          rafId = requestAnimationFrame(draw);
+        }
+
+        resize();
+        rafId = requestAnimationFrame(draw);
+        return {
+          resize: resize,
+          reseed: seed,
+          setPointer: setPointer,
+          destroy: function () {
+            if (rafId) cancelAnimationFrame(rafId);
+          }
+        };
+      }
+
+      const variants = {
+        constellation: {
+          count: 92, seedVelocity: 0.28, minSize: 0.65, maxSize: 1.9,
+          driftForce: 1.0, flowScale: 1.0, friction: 0.985, radius: 190,
+          attract: 0.017, swirl: 0.012, repel: 0.001,
+          lineDistance: 146, lineOpacity: 0.22, lineWidth: 1,
+          lineColor: [124, 58, 237], nodeColor: [245, 244, 255], glowColor: [167, 139, 250],
+          nodeOpacity: 0.9, twinkleSpeed: 1, leaderRate: 0.02, leaderBias: 0.2
+        },
+        aurora: {
+          count: 118, seedVelocity: 0.38, minSize: 0.6, maxSize: 1.7,
+          driftForce: 1.5, flowScale: 1.55, friction: 0.987, radius: 240,
+          attract: 0.008, swirl: 0.024, repel: 0,
+          lineDistance: 128, lineOpacity: 0.12, lineWidth: 1,
+          lineColor: [99, 102, 241], nodeColor: [219, 234, 254], glowColor: [129, 140, 248],
+          nodeOpacity: 0.78, twinkleSpeed: 1.2, leaderRate: 0.04, leaderBias: 0.45
+        },
+        magnetic: {
+          count: 86, seedVelocity: 0.24, minSize: 0.7, maxSize: 2.2,
+          driftForce: 0.9, flowScale: 0.9, friction: 0.982, radius: 250,
+          attract: 0.031, swirl: 0.02, repel: 0,
+          lineDistance: 170, lineOpacity: 0.18, lineWidth: 1.1,
+          lineColor: [168, 85, 247], nodeColor: [255, 250, 255], glowColor: [196, 181, 253],
+          nodeOpacity: 0.92, twinkleSpeed: 0.95, leaderRate: 0.03, leaderBias: 0.25
+        },
+        swarm: {
+          count: 112, seedVelocity: 0.34, minSize: 0.6, maxSize: 1.8,
+          driftForce: 1.3, flowScale: 1.25, friction: 0.986, radius: 220,
+          attract: 0.012, swirl: 0.018, repel: 0.004,
+          lineDistance: 118, lineOpacity: 0.16, lineWidth: 0.9,
+          lineColor: [56, 189, 248], nodeColor: [240, 249, 255], glowColor: [56, 189, 248],
+          nodeOpacity: 0.84, twinkleSpeed: 1.1, leaderRate: 0.08, leaderBias: 0.95
+        }
+      };
+
+      const field = createParticleField(canvas, function () {
+        return variants[currentVariant];
+      });
+
       function setMouse(x, y) {
-        root.style.setProperty('--mx', x + 'px');
-        root.style.setProperty('--my', y + 'px');
+        root.style.setProperty('--mx', String(x));
+        root.style.setProperty('--my', String(y));
+        field.setPointer(x, y, true);
       }
 
       function activateVariant(name) {
@@ -442,6 +591,7 @@
         buttons.forEach((button) => {
           button.classList.toggle('lab-variant--active', button.dataset.variant === name);
         });
+        field.reseed();
       }
 
       buttons.forEach((button) => {
@@ -450,16 +600,26 @@
         });
       });
 
+      function localPoint(clientX, clientY) {
+        const rect = labShell.getBoundingClientRect();
+        return { x: clientX - rect.left, y: clientY - rect.top };
+      }
+
       window.addEventListener('mousemove', function (event) {
-        setMouse(event.clientX, event.clientY);
+        const point = localPoint(event.clientX, event.clientY);
+        setMouse(point.x, point.y);
       }, { passive: true });
 
       window.addEventListener('touchmove', function (event) {
         if (!event.touches || !event.touches[0]) return;
-        setMouse(event.touches[0].clientX, event.touches[0].clientY);
+        const point = localPoint(event.touches[0].clientX, event.touches[0].clientY);
+        setMouse(point.x, point.y);
       }, { passive: true });
 
-      setMouse(window.innerWidth * 0.58, window.innerHeight * 0.42);
+      window.addEventListener('resize', field.resize);
+      root.style.setProperty('--mx', String(window.innerWidth * 0.58));
+      root.style.setProperty('--my', String(window.innerHeight * 0.42));
+      field.setPointer(window.innerWidth * 0.58, window.innerHeight * 0.42, false);
       activateVariant(currentVariant);
     })();
   </script>

@@ -58,6 +58,8 @@
      SECTION 1 — HERO
 ════════════════════════════════════════════════════════════ -->
 <section class="hero" id="hero">
+  <div class="hero__bg" aria-hidden="true"></div>
+  <canvas class="hero__canvas" id="hero-particles" aria-hidden="true"></canvas>
   <div class="hero__content">
 
     <div class="hero__eyebrow">
@@ -600,57 +602,214 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     BACKGROUND STARFIELD — no external JS dependency, no visible rings
-════════════════════════════════════════════════════════════ -->
-<style>
-  .bg-starfield,
-  .bg-starfield::before,
-  .bg-starfield::after {
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    content: '';
-  }
-  .bg-starfield {
-    z-index: -3;
-    background:
-      radial-gradient(circle at 20% 20%, rgba(124,58,237,0.10), transparent 22%),
-      radial-gradient(circle at 80% 0%, rgba(79,70,229,0.08), transparent 26%),
-      radial-gradient(circle at 50% 100%, rgba(168,85,247,0.08), transparent 24%),
-      #0a0a0a;
-  }
-  .bg-starfield::before {
-    z-index: -2;
-    opacity: 0.9;
-    background-image:
-      radial-gradient(circle, rgba(255,255,255,0.82) 0.8px, transparent 1.2px),
-      radial-gradient(circle, rgba(168,85,247,0.55) 0.7px, transparent 1.1px),
-      radial-gradient(circle, rgba(255,255,255,0.45) 0.6px, transparent 1px);
-    background-size: 180px 180px, 260px 260px, 340px 340px;
-    background-position: 0 0, 40px 90px, 110px 30px;
-  }
-  .bg-starfield::after {
-    z-index: -1;
-    opacity: 0.35;
-    background-image:
-      radial-gradient(circle, rgba(124,58,237,0.4) 0.9px, transparent 1.4px),
-      radial-gradient(circle, rgba(255,255,255,0.2) 0.7px, transparent 1.1px);
-    background-size: 420px 420px, 520px 520px;
-    background-position: 60px 120px, 200px 80px;
-  }
-</style>
-<div class="bg-starfield" aria-hidden="true"></div>
-
-
-<!-- ═══════════════════════════════════════════════════════════
-     JAVASCRIPT — FAQ accordion + waitlist form handler
-     (Vanilla JS, no libraries, no external scripts)
+     JAVASCRIPT — hero particle field + FAQ accordion + waitlist form handler
 ════════════════════════════════════════════════════════════ -->
 <script>
 (function () {
   'use strict';
 
-  /* ── FAQ Accordion ─────────────────────────────────────── */
+  function createParticleField(canvas, options) {
+    if (!canvas || !canvas.getContext) return null;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    const particles = [];
+    const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let width = 0;
+    let height = 0;
+    let rafId = null;
+
+    function variantSettings() {
+      return typeof options.getVariant === 'function' ? options.getVariant() : (options.variant || {});
+    }
+
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(1, rect.width || canvas.clientWidth || window.innerWidth);
+      height = Math.max(1, rect.height || canvas.clientHeight || window.innerHeight);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (!particles.length) seed();
+    }
+
+    function seed() {
+      particles.length = 0;
+      const cfg = variantSettings();
+      const count = cfg.count || 90;
+      for (let i = 0; i < count; i += 1) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * (cfg.drift || 0.18),
+          vy: (Math.random() - 0.5) * (cfg.drift || 0.18),
+          baseSize: (cfg.minSize || 0.7) + Math.random() * ((cfg.maxSize || 2.2) - (cfg.minSize || 0.7)),
+          depth: 0.45 + Math.random() * 0.9,
+          twinkle: Math.random() * Math.PI * 2
+        });
+      }
+    }
+
+    function setPointer(x, y, active) {
+      pointer.targetX = x;
+      pointer.targetY = y;
+      if (!pointer.active) {
+        pointer.x = x;
+        pointer.y = y;
+      }
+      pointer.active = active;
+    }
+
+    function updatePointer() {
+      pointer.x += (pointer.targetX - pointer.x) * 0.12;
+      pointer.y += (pointer.targetY - pointer.y) * 0.12;
+    }
+
+    function stepParticle(p, cfg, time) {
+      p.twinkle += 0.01 * (cfg.twinkleSpeed || 1);
+      p.vx *= cfg.friction || 0.985;
+      p.vy *= cfg.friction || 0.985;
+      p.vx += (Math.sin((p.y + time * 0.02) * 0.01 * (cfg.flowScale || 1)) * 0.0025 + (Math.random() - 0.5) * 0.0008) * (cfg.driftForce || 1);
+      p.vy += (Math.cos((p.x - time * 0.015) * 0.01 * (cfg.flowScale || 1)) * 0.0025 + (Math.random() - 0.5) * 0.0008) * (cfg.driftForce || 1);
+
+      if (pointer.active || cfg.alwaysInteractive) {
+        const dx = pointer.x - p.x;
+        const dy = pointer.y - p.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        const radius = (cfg.radius || 170) * p.depth;
+        if (dist < radius) {
+          const force = 1 - dist / radius;
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const attract = (cfg.attract || 0.018) * force * p.depth;
+          const swirl = (cfg.swirl || 0) * force * p.depth;
+          const repel = (cfg.repel || 0) * force * p.depth;
+          p.vx += nx * attract - ny * swirl - nx * repel;
+          p.vy += ny * attract + nx * swirl - ny * repel;
+        }
+      }
+
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -20) p.x = width + 20;
+      if (p.x > width + 20) p.x = -20;
+      if (p.y < -20) p.y = height + 20;
+      if (p.y > height + 20) p.y = -20;
+    }
+
+    function drawConnections(cfg) {
+      const lineDistance = cfg.lineDistance || 150;
+      for (let i = 0; i < particles.length; i += 1) {
+        const a = particles[i];
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist > lineDistance) continue;
+          const alpha = (1 - dist / lineDistance) * (cfg.lineOpacity || 0.22) * Math.min(a.depth, b.depth);
+          if (alpha <= 0.01) continue;
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(' + cfg.lineColor.join(',') + ',' + alpha.toFixed(3) + ')';
+          ctx.lineWidth = cfg.lineWidth || 1;
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    function drawParticles(cfg, time) {
+      const nodeColor = cfg.nodeColor || [255, 255, 255];
+      const glowColor = cfg.glowColor || nodeColor;
+      particles.forEach(function (p) {
+        const pulse = 0.65 + 0.35 * Math.sin(p.twinkle + time * 0.0012);
+        const size = p.baseSize * p.depth * (cfg.sizeBoost || 1);
+        const alpha = (cfg.nodeOpacity || 0.8) * pulse;
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(' + glowColor.join(',') + ',' + (alpha * 0.12).toFixed(3) + ')';
+        ctx.arc(p.x, p.y, size * 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(' + nodeColor.join(',') + ',' + alpha.toFixed(3) + ')';
+        ctx.arc(p.x, p.y, Math.max(0.45, size), 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function frame(time) {
+      const cfg = variantSettings();
+      updatePointer();
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(function (p) { stepParticle(p, cfg, time || 0); });
+      drawConnections(cfg);
+      drawParticles(cfg, time || 0);
+      rafId = requestAnimationFrame(frame);
+    }
+
+    resize();
+    rafId = requestAnimationFrame(frame);
+
+    return {
+      resize: resize,
+      setPointer: setPointer,
+      destroy: function () { if (rafId) cancelAnimationFrame(rafId); }
+    };
+  }
+
+  const canvas = document.getElementById('hero-particles');
+  const hero = document.getElementById('hero');
+  let heroField = null;
+
+  if (canvas && hero) {
+    heroField = createParticleField(canvas, {
+      variant: {
+        count: 108,
+        drift: 0.22,
+        driftForce: 1,
+        flowScale: 1,
+        friction: 0.985,
+        radius: 200,
+        attract: 0.018,
+        swirl: 0.013,
+        repel: 0,
+        lineDistance: 154,
+        lineOpacity: 0.28,
+        lineColor: [124, 58, 237],
+        nodeColor: [245, 244, 255],
+        glowColor: [167, 139, 250],
+        nodeOpacity: 0.92,
+        minSize: 0.72,
+        maxSize: 2.05,
+        sizeBoost: 1,
+        twinkleSpeed: 1
+      }
+    });
+
+    function localPoint(clientX, clientY) {
+      const rect = hero.getBoundingClientRect();
+      return { x: clientX - rect.left, y: clientY - rect.top };
+    }
+
+    hero.addEventListener('mousemove', function (event) {
+      const point = localPoint(event.clientX, event.clientY);
+      heroField.setPointer(point.x, point.y, true);
+    }, { passive: true });
+
+    hero.addEventListener('mouseleave', function () {
+      heroField.setPointer(hero.clientWidth * 0.5, hero.clientHeight * 0.45, false);
+    });
+
+    hero.addEventListener('touchmove', function (event) {
+      if (!event.touches || !event.touches[0]) return;
+      const point = localPoint(event.touches[0].clientX, event.touches[0].clientY);
+      heroField.setPointer(point.x, point.y, true);
+    }, { passive: true });
+
+    window.addEventListener('resize', heroField.resize);
+    heroField.setPointer(hero.clientWidth * 0.58, hero.clientHeight * 0.42, false);
+  }
+
   const faqItems = document.querySelectorAll('.faq__item');
 
   faqItems.forEach(function (item) {
@@ -658,13 +817,11 @@
     btn.addEventListener('click', function () {
       const isOpen = item.classList.contains('faq__item--open');
 
-      // Close all
       faqItems.forEach(function (i) {
         i.classList.remove('faq__item--open');
         i.querySelector('.faq__question').setAttribute('aria-expanded', 'false');
       });
 
-      // Toggle current
       if (!isOpen) {
         item.classList.add('faq__item--open');
         btn.setAttribute('aria-expanded', 'true');
@@ -672,7 +829,6 @@
     });
   });
 
-  /* ── Waitlist Form — Formspree AJAX submission ─────────── */
   const form    = document.getElementById('waitlist-form');
   const success = document.getElementById('waitlist-success');
 
@@ -683,15 +839,13 @@
       const data     = new FormData(form);
       const endpoint = form.getAttribute('action');
 
-      // Bail gracefully if Formspree ID not yet replaced
       if (endpoint.includes('YOUR_FORMSPREE_ID')) {
-        // Fallback: save to localStorage so no lead is lost during dev
         const email = data.get('email');
         try {
           const list = JSON.parse(localStorage.getItem('oc_waitlist') || '[]');
           list.push({ email: email, ts: new Date().toISOString() });
           localStorage.setItem('oc_waitlist', JSON.stringify(list));
-        } catch (err) { /* ignore storage errors */ }
+        } catch (err) { }
         form.style.display = 'none';
         success.style.display = 'block';
         return;
@@ -722,7 +876,6 @@
     });
   }
 
-  /* ── Smooth scroll for browsers that need a nudge ──────── */
   document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
     anchor.addEventListener('click', function (e) {
       const target = document.querySelector(this.getAttribute('href'));
@@ -733,20 +886,17 @@
     });
   });
 
-  /* ── Nav active state on scroll ─────────────────────────── */
   const sections  = document.querySelectorAll('section[id]');
   const navLinks  = document.querySelectorAll('.nav__links a[href^="#"]');
   const nav       = document.querySelector('.nav');
 
   function onScroll() {
-    // Add shadow to nav on scroll
     if (window.scrollY > 32) {
       nav.style.boxShadow = '0 1px 0 0 #1e1e1e, 0 8px 32px rgba(0,0,0,0.5)';
     } else {
       nav.style.boxShadow = 'none';
     }
 
-    // Highlight active section link
     let current = '';
     sections.forEach(function (section) {
       if (window.scrollY >= section.offsetTop - 120) {
@@ -763,8 +913,7 @@
   }
 
   window.addEventListener('scroll', onScroll, { passive: true });
-  onScroll(); // run once on load
-
+  onScroll();
 })();
 </script>
 
