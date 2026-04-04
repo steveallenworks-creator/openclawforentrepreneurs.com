@@ -600,50 +600,46 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     PARTICLES BACKGROUND
+     BACKGROUND STARFIELD — no external JS dependency, no visible rings
 ════════════════════════════════════════════════════════════ -->
-<div id="particles-js" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:#0a0a0a;"></div>
-<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
-<script>
-particlesJS('particles-js', {
-  particles: {
-    number: { value: 80, density: { enable: true, value_area: 800 } },
-    color: { value: '#7c3aed' },
-    shape: { type: 'circle' },
-    opacity: { value: 0, random: false },
-    size: { value: 2.5, random: true },
-    line_linked: {
-      enable: true,
-      distance: 140,
-      color: '#7c3aed',
-      opacity: 0.25,
-      width: 1
-    },
-    move: {
-      enable: true,
-      speed: 1.2,
-      direction: 'none',
-      random: true,
-      straight: false,
-      out_mode: 'out',
-      bounce: false
-    }
-  },
-  interactivity: {
-    detect_on: 'window',
-    events: {
-      onhover: { enable: true, mode: 'repulse' },
-      onclick: { enable: true, mode: 'push' },
-      resize: true
-    },
-    modes: {
-      repulse: { distance: 120, duration: 0.5 },
-      push: { particles_nb: 5 }
-    }
-  },
-  retina_detect: true
-});
-</script>
+<style>
+  .bg-starfield,
+  .bg-starfield::before,
+  .bg-starfield::after {
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    content: '';
+  }
+  .bg-starfield {
+    z-index: -3;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(124,58,237,0.10), transparent 22%),
+      radial-gradient(circle at 80% 0%, rgba(79,70,229,0.08), transparent 26%),
+      radial-gradient(circle at 50% 100%, rgba(168,85,247,0.08), transparent 24%),
+      #0a0a0a;
+  }
+  .bg-starfield::before {
+    z-index: -2;
+    opacity: 0.9;
+    background-image:
+      radial-gradient(circle, rgba(255,255,255,0.82) 0.8px, transparent 1.2px),
+      radial-gradient(circle, rgba(168,85,247,0.55) 0.7px, transparent 1.1px),
+      radial-gradient(circle, rgba(255,255,255,0.45) 0.6px, transparent 1px);
+    background-size: 180px 180px, 260px 260px, 340px 340px;
+    background-position: 0 0, 40px 90px, 110px 30px;
+  }
+  .bg-starfield::after {
+    z-index: -1;
+    opacity: 0.35;
+    background-image:
+      radial-gradient(circle, rgba(124,58,237,0.4) 0.9px, transparent 1.4px),
+      radial-gradient(circle, rgba(255,255,255,0.2) 0.7px, transparent 1.1px);
+    background-size: 420px 420px, 520px 520px;
+    background-position: 60px 120px, 200px 80px;
+  }
+</style>
+<div class="bg-starfield" aria-hidden="true"></div>
 
 
 <!-- ═══════════════════════════════════════════════════════════

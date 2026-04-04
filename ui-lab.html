@@ -185,33 +185,67 @@
       font-size: 0.82rem;
       margin-bottom: 4px;
     }
+    .lab-stars,
+    .lab-stars::before,
+    .lab-stars::after,
     .aurora-layer,
     .spotlight-layer,
     .ripple-layer {
       position: fixed;
       inset: 0;
       pointer-events: none;
-      z-index: 0;
-      opacity: 0;
-      transition: opacity 0.35s ease;
     }
-    .aurora-layer--active,
-    .spotlight-layer--active,
-    .ripple-layer--active {
-      opacity: 1;
+    .lab-stars,
+    .lab-stars::before,
+    .lab-stars::after {
+      content: "";
+      z-index: 0;
+    }
+    .lab-stars {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(124,58,237,0.10), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(79,70,229,0.08), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(168,85,247,0.08), transparent 24%),
+        #0a0a0a;
+    }
+    .lab-stars::before {
+      opacity: 0.92;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.88) 0.85px, transparent 1.2px),
+        radial-gradient(circle, rgba(196,181,253,0.72) 0.75px, transparent 1.15px),
+        radial-gradient(circle, rgba(255,255,255,0.52) 0.65px, transparent 1px);
+      background-size: 150px 150px, 220px 220px, 320px 320px;
+      background-position: 0 0, 70px 110px, 140px 40px;
+      animation: driftStars 48s linear infinite;
+    }
+    .lab-stars::after {
+      opacity: 0.42;
+      background-image:
+        radial-gradient(circle, rgba(124,58,237,0.5) 1px, transparent 1.45px),
+        radial-gradient(circle, rgba(255,255,255,0.24) 0.8px, transparent 1.2px);
+      background-size: 360px 360px, 480px 480px;
+      background-position: 40px 80px, 200px 120px;
+      animation: driftStarsReverse 72s linear infinite;
+    }
+    .aurora-layer,
+    .spotlight-layer,
+    .ripple-layer {
+      z-index: 1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
     }
     .aurora-layer {
       background:
-        radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(124,58,237,0.18), transparent 18%),
-        radial-gradient(circle at 20% 20%, rgba(79,70,229,0.16), transparent 24%),
-        radial-gradient(circle at 80% 35%, rgba(168,85,247,0.14), transparent 22%),
-        radial-gradient(circle at 50% 82%, rgba(59,130,246,0.10), transparent 20%);
-      filter: blur(36px);
+        radial-gradient(circle 240px at var(--mx, 50%) var(--my, 50%), rgba(124,58,237,0.26), transparent 60%),
+        radial-gradient(circle 320px at calc(var(--mx, 50%) - 18%) calc(var(--my, 50%) + 12%), rgba(79,70,229,0.18), transparent 62%),
+        radial-gradient(circle at 20% 20%, rgba(79,70,229,0.12), transparent 24%),
+        radial-gradient(circle at 80% 35%, rgba(168,85,247,0.10), transparent 22%);
+      filter: blur(24px);
     }
     .spotlight-layer {
       background:
-        radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.12), transparent 11%),
-        radial-gradient(circle at calc(var(--mx, 50%) + 8%) calc(var(--my, 50%) + 6%), rgba(124,58,237,0.16), transparent 18%);
+        radial-gradient(circle 140px at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.18), transparent 55%),
+        radial-gradient(circle 280px at calc(var(--mx, 50%) + 3%) calc(var(--my, 50%) + 2%), rgba(124,58,237,0.22), transparent 62%);
       mix-blend-mode: screen;
     }
     .ripple-layer::before,
@@ -220,17 +254,50 @@
       position: absolute;
       left: var(--mx, 50%);
       top: var(--my, 50%);
-      width: 180px;
-      height: 180px;
       border-radius: 999px;
       transform: translate(-50%, -50%);
-      border: 1px solid rgba(124,58,237,0.18);
-      opacity: 0.65;
+      opacity: 0.6;
+      animation: pulseRing 2.8s ease-out infinite;
+    }
+    .ripple-layer::before {
+      width: 170px;
+      height: 170px;
+      border: 1px solid rgba(168,85,247,0.28);
+      box-shadow: 0 0 42px rgba(124,58,237,0.12);
     }
     .ripple-layer::after {
-      width: 320px;
-      height: 320px;
-      border-color: rgba(124,58,237,0.09);
+      width: 310px;
+      height: 310px;
+      border: 1px solid rgba(124,58,237,0.14);
+      animation-delay: 0.6s;
+    }
+    body[data-variant="constellation"] .aurora-layer,
+    body[data-variant="constellation"] .spotlight-layer,
+    body[data-variant="constellation"] .ripple-layer {
+      opacity: 0;
+    }
+    body[data-variant="aurora"] .aurora-layer {
+      opacity: 1;
+    }
+    body[data-variant="spotlight"] .spotlight-layer {
+      opacity: 1;
+    }
+    body[data-variant="ripple"] .ripple-layer,
+    body[data-variant="ripple"] .spotlight-layer {
+      opacity: 1;
+    }
+    @keyframes driftStars {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(-32px, -18px, 0); }
+    }
+    @keyframes driftStarsReverse {
+      from { transform: translate3d(0, 0, 0); }
+      to { transform: translate3d(24px, 20px, 0); }
+    }
+    @keyframes pulseRing {
+      0% { transform: translate(-50%, -50%) scale(0.92); opacity: 0.48; }
+      70% { transform: translate(-50%, -50%) scale(1.06); opacity: 0.18; }
+      100% { transform: translate(-50%, -50%) scale(1.12); opacity: 0.04; }
     }
     @media (max-width: 1100px) {
       .lab-panel {
@@ -259,8 +326,8 @@
     }
   </style>
 </head>
-<body>
-  <div id="particles-js" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:#0a0a0a;"></div>
+<body data-variant="constellation">
+  <div class="lab-stars" aria-hidden="true"></div>
   <div id="aurora-layer" class="aurora-layer"></div>
   <div id="spotlight-layer" class="spotlight-layer"></div>
   <div id="ripple-layer" class="ripple-layer"></div>
@@ -357,124 +424,24 @@
     </section>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
   <script>
     (function () {
       const root = document.documentElement;
-      const aurora = document.getElementById('aurora-layer');
-      const spotlight = document.getElementById('spotlight-layer');
-      const ripple = document.getElementById('ripple-layer');
+      const body = document.body;
       const buttons = Array.from(document.querySelectorAll('.lab-variant'));
-      let currentVariant = 'constellation';
+      let currentVariant = body.getAttribute('data-variant') || 'constellation';
 
       function setMouse(x, y) {
         root.style.setProperty('--mx', x + 'px');
         root.style.setProperty('--my', y + 'px');
       }
 
-      function constellationConfig() {
-        return {
-          particles: {
-            number: { value: 80, density: { enable: true, value_area: 800 } },
-            color: { value: '#7c3aed' },
-            shape: { type: 'circle' },
-            opacity: { value: 0, random: false },
-            size: { value: 2.5, random: true },
-            line_linked: { enable: true, distance: 140, color: '#7c3aed', opacity: 0.25, width: 1 },
-            move: { enable: true, speed: 1.2, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-          },
-          interactivity: {
-            detect_on: 'window',
-            events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
-            modes: { repulse: { distance: 120, duration: 0.5 }, push: { particles_nb: 5 } }
-          },
-          retina_detect: true
-        };
-      }
-
-      function auroraConfig() {
-        return {
-          particles: {
-            number: { value: 64, density: { enable: true, value_area: 900 } },
-            color: { value: ['#7c3aed', '#4f46e5', '#8b5cf6'] },
-            shape: { type: 'circle' },
-            opacity: { value: 0.04, random: true },
-            size: { value: 3.2, random: true },
-            line_linked: { enable: true, distance: 160, color: '#7c3aed', opacity: 0.12, width: 1 },
-            move: { enable: true, speed: 1.0, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-          },
-          interactivity: {
-            detect_on: 'window',
-            events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: false }, resize: true },
-            modes: { grab: { distance: 180, line_linked: { opacity: 0.22 } } }
-          },
-          retina_detect: true
-        };
-      }
-
-      function spotlightConfig() {
-        return {
-          particles: {
-            number: { value: 52, density: { enable: true, value_area: 900 } },
-            color: { value: '#7c3aed' },
-            shape: { type: 'circle' },
-            opacity: { value: 0.03, random: true },
-            size: { value: 2.8, random: true },
-            line_linked: { enable: true, distance: 170, color: '#a855f7', opacity: 0.16, width: 1 },
-            move: { enable: true, speed: 0.9, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-          },
-          interactivity: {
-            detect_on: 'window',
-            events: { onhover: { enable: true, mode: 'bubble' }, onclick: { enable: false }, resize: true },
-            modes: { bubble: { distance: 160, size: 5, duration: 0.4, opacity: 0.08, speed: 3 } }
-          },
-          retina_detect: true
-        };
-      }
-
-      function rippleConfig() {
-        return {
-          particles: {
-            number: { value: 72, density: { enable: true, value_area: 900 } },
-            color: { value: '#7c3aed' },
-            shape: { type: 'circle' },
-            opacity: { value: 0.02, random: true },
-            size: { value: 2.4, random: true },
-            line_linked: { enable: true, distance: 145, color: '#7c3aed', opacity: 0.18, width: 1 },
-            move: { enable: true, speed: 1.15, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
-          },
-          interactivity: {
-            detect_on: 'window',
-            events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'repulse' }, resize: true },
-            modes: { repulse: { distance: 180, duration: 0.55 }, push: { particles_nb: 0 } }
-          },
-          retina_detect: true
-        };
-      }
-
       function activateVariant(name) {
         currentVariant = name;
-        buttons.forEach((button) => button.classList.toggle('lab-variant--active', button.dataset.variant === name));
-        aurora.classList.toggle('aurora-layer--active', name === 'aurora');
-        spotlight.classList.toggle('spotlight-layer--active', name === 'spotlight');
-        ripple.classList.toggle('ripple-layer--active', name === 'ripple');
-
-        if (window.pJSDom && window.pJSDom.length) {
-          window.pJSDom.forEach((instance) => {
-            if (instance && instance.pJS && instance.pJS.fn && instance.pJS.fn.vendors && instance.pJS.fn.vendors.destroypJS) {
-              instance.pJS.fn.vendors.destroypJS();
-            }
-          });
-          window.pJSDom = [];
-        }
-
-        const configMap = {
-          constellation: constellationConfig,
-          aurora: auroraConfig,
-          spotlight: spotlightConfig,
-          ripple: rippleConfig,
-        };
-        particlesJS('particles-js', configMap[name]());
+        body.setAttribute('data-variant', name);
+        buttons.forEach((button) => {
+          button.classList.toggle('lab-variant--active', button.dataset.variant === name);
+        });
       }
 
       buttons.forEach((button) => {
