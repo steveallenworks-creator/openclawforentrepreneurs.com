@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>UI Lab — OpenClaw for Entrepreneurs</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .lab-shell {
+      position: relative;
+      min-height: 100vh;
+      overflow: hidden;
+      background: #0a0a0a;
+    }
+    .lab-panel {
+      position: fixed;
+      top: 88px;
+      right: 24px;
+      z-index: 10;
+      width: min(320px, calc(100vw - 48px));
+      background: rgba(12, 12, 16, 0.88);
+      border: 1px solid #1e1e1e;
+      border-radius: 20px;
+      backdrop-filter: blur(16px);
+      box-shadow: 0 24px 80px rgba(0,0,0,0.45);
+      padding: 20px;
+    }
+    .lab-panel__eyebrow {
+      font-size: 0.72rem;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 8px;
+      font-weight: 700;
+    }
+    .lab-panel__title {
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: #f0f0f0;
+      margin-bottom: 8px;
+    }
+    .lab-panel__copy {
+      font-size: 0.9rem;
+      color: #9a9a9a;
+      line-height: 1.5;
+      margin-bottom: 18px;
+    }
+    .lab-variants {
+      display: grid;
+      gap: 10px;
+    }
+    .lab-variant {
+      width: 100%;
+      border: 1px solid #262626;
+      background: rgba(255,255,255,0.02);
+      color: #d9d9d9;
+      border-radius: 14px;
+      padding: 14px 14px 12px;
+      text-align: left;
+      cursor: pointer;
+      transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+    }
+    .lab-variant:hover {
+      border-color: #7c3aed88;
+      transform: translateY(-1px);
+      background: rgba(124, 58, 237, 0.08);
+    }
+    .lab-variant--active {
+      border-color: #7c3aed;
+      background: rgba(124, 58, 237, 0.14);
+      box-shadow: 0 0 0 1px rgba(124, 58, 237, 0.28) inset;
+    }
+    .lab-variant__name {
+      display: block;
+      font-size: 0.95rem;
+      font-weight: 700;
+      margin-bottom: 4px;
+      color: #fff;
+    }
+    .lab-variant__desc {
+      display: block;
+      font-size: 0.82rem;
+      line-height: 1.45;
+      color: #9a9a9a;
+    }
+    .lab-links {
+      display: flex;
+      gap: 10px;
+      margin-top: 16px;
+      flex-wrap: wrap;
+    }
+    .lab-link {
+      font-size: 0.82rem;
+      color: #b68cff;
+    }
+    .hero--lab {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding-top: 60px;
+      position: relative;
+      z-index: 2;
+    }
+    .hero__content--lab {
+      position: relative;
+      z-index: 2;
+    }
+    .lab-card-stack {
+      position: absolute;
+      left: 6vw;
+      bottom: 8vh;
+      width: min(360px, 32vw);
+      min-width: 260px;
+      z-index: 2;
+      opacity: 0.95;
+      pointer-events: none;
+    }
+    .lab-card {
+      position: absolute;
+      background: rgba(255,255,255,0.96);
+      border-radius: 22px;
+      box-shadow: 0 30px 80px rgba(0,0,0,0.28);
+      border: 1px solid rgba(255,255,255,0.35);
+    }
+    .lab-card--rear {
+      width: 78%;
+      aspect-ratio: 1.1;
+      bottom: 14px;
+      left: 0;
+      transform: rotate(-12deg);
+      background: linear-gradient(145deg, rgba(255,255,255,0.18), rgba(124,58,237,0.12));
+      backdrop-filter: blur(18px);
+    }
+    .lab-card--mid {
+      width: 82%;
+      aspect-ratio: 1.16;
+      bottom: -6px;
+      left: 18%;
+      transform: rotate(10deg);
+      background: linear-gradient(145deg, rgba(255,255,255,0.2), rgba(99,102,241,0.1));
+      backdrop-filter: blur(18px);
+    }
+    .lab-card--front {
+      position: relative;
+      width: 78%;
+      aspect-ratio: 1.06;
+      margin-left: 12%;
+      transform: rotate(-3deg);
+      padding: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .lab-drive {
+      width: 92px;
+      height: 92px;
+      border-radius: 26px;
+      background: #ffffff;
+      box-shadow: 0 16px 40px rgba(0,0,0,0.14);
+      display: grid;
+      place-items: center;
+    }
+    .lab-drive svg {
+      width: 54px;
+      height: 54px;
+      display: block;
+    }
+    .lab-card__meta {
+      position: absolute;
+      left: 22px;
+      bottom: 18px;
+      right: 22px;
+      font-size: 0.74rem;
+      color: #444;
+      line-height: 1.45;
+    }
+    .lab-card__meta strong {
+      display: block;
+      color: #111;
+      font-size: 0.82rem;
+      margin-bottom: 4px;
+    }
+    .aurora-layer,
+    .spotlight-layer,
+    .ripple-layer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .aurora-layer--active,
+    .spotlight-layer--active,
+    .ripple-layer--active {
+      opacity: 1;
+    }
+    .aurora-layer {
+      background:
+        radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(124,58,237,0.18), transparent 18%),
+        radial-gradient(circle at 20% 20%, rgba(79,70,229,0.16), transparent 24%),
+        radial-gradient(circle at 80% 35%, rgba(168,85,247,0.14), transparent 22%),
+        radial-gradient(circle at 50% 82%, rgba(59,130,246,0.10), transparent 20%);
+      filter: blur(36px);
+    }
+    .spotlight-layer {
+      background:
+        radial-gradient(circle at var(--mx, 50%) var(--my, 50%), rgba(255,255,255,0.12), transparent 11%),
+        radial-gradient(circle at calc(var(--mx, 50%) + 8%) calc(var(--my, 50%) + 6%), rgba(124,58,237,0.16), transparent 18%);
+      mix-blend-mode: screen;
+    }
+    .ripple-layer::before,
+    .ripple-layer::after {
+      content: "";
+      position: absolute;
+      left: var(--mx, 50%);
+      top: var(--my, 50%);
+      width: 180px;
+      height: 180px;
+      border-radius: 999px;
+      transform: translate(-50%, -50%);
+      border: 1px solid rgba(124,58,237,0.18);
+      opacity: 0.65;
+    }
+    .ripple-layer::after {
+      width: 320px;
+      height: 320px;
+      border-color: rgba(124,58,237,0.09);
+    }
+    @media (max-width: 1100px) {
+      .lab-panel {
+        position: relative;
+        top: auto;
+        right: auto;
+        width: min(720px, calc(100vw - 48px));
+        margin: 84px auto 0;
+      }
+      .hero--lab {
+        min-height: auto;
+        padding: 72px 0 120px;
+      }
+      .lab-card-stack {
+        position: relative;
+        left: auto;
+        bottom: auto;
+        width: min(420px, 72vw);
+        margin: 24px auto 0;
+      }
+    }
+    @media (max-width: 720px) {
+      .lab-card-stack { width: min(320px, 80vw); min-width: 0; }
+      .hero__headline { font-size: clamp(2.2rem, 10vw, 4rem); }
+      .hero__sub { font-size: 1rem; }
+    }
+  </style>
+</head>
+<body>
+  <div id="particles-js" style="position:fixed;top:0;left:0;width:100%;height:100%;z-index:-1;pointer-events:none;background:#0a0a0a;"></div>
+  <div id="aurora-layer" class="aurora-layer"></div>
+  <div id="spotlight-layer" class="spotlight-layer"></div>
+  <div id="ripple-layer" class="ripple-layer"></div>
+
+  <nav class="nav">
+    <div class="nav__logo">
+      <span class="nav__logo-dot"></span>
+      OpenClaw
+    </div>
+    <ul class="nav__links">
+      <li><a href="index.html">Main Site</a></li>
+      <li><a href="#hero">Hero</a></li>
+      <li><a href="#lab">UI Lab</a></li>
+      <li><a href="#waitlist" class="btn btn--secondary btn--sm">Get Early Access</a></li>
+    </ul>
+  </nav>
+
+  <div class="lab-shell">
+    <aside class="lab-panel" id="lab">
+      <div class="lab-panel__eyebrow">UI Lab</div>
+      <div class="lab-panel__title">Same layout, different motion systems.</div>
+      <div class="lab-panel__copy">I cloned the current hero and added a few mouse-reactive variants so you can compare feel without changing the copy, CTA, or overall structure.</div>
+      <div class="lab-variants">
+        <button class="lab-variant lab-variant--active" data-variant="constellation">
+          <span class="lab-variant__name">Constellation</span>
+          <span class="lab-variant__desc">Current site feel. Lines stay visible; ring/dot particles are effectively invisible.</span>
+        </button>
+        <button class="lab-variant" data-variant="aurora">
+          <span class="lab-variant__name">Aurora Drift</span>
+          <span class="lab-variant__desc">Soft mouse-following glows layered over the same star field.</span>
+        </button>
+        <button class="lab-variant" data-variant="spotlight">
+          <span class="lab-variant__name">Magnetic Spotlight</span>
+          <span class="lab-variant__desc">A brighter focal beam follows the cursor for a more tactile premium feel.</span>
+        </button>
+        <button class="lab-variant" data-variant="ripple">
+          <span class="lab-variant__name">Ripple Field</span>
+          <span class="lab-variant__desc">Concentric rings track the cursor while the stars subtly repulse away.</span>
+        </button>
+      </div>
+      <div class="lab-links">
+        <a class="lab-link" href="index.html">Back to production page</a>
+      </div>
+    </aside>
+
+    <section class="hero hero--lab" id="hero">
+      <div class="hero__content hero__content--lab">
+        <div class="hero__eyebrow">
+          <span>⚡</span>
+          OpenClaw — Early Access Open
+        </div>
+
+        <h1 class="hero__headline">
+          Your AI team runs your<br>
+          business <span>while you sleep.</span>
+        </h1>
+
+        <p class="hero__sub">
+          OpenClaw — an autonomous operating system for entrepreneurs.
+          One app, infinite leverage. Run it on your laptop, a Mac Mini, or a VPS while
+          1,000 agents handle your sales, content, operations, and outreach around the clock.
+        </p>
+
+        <div class="hero__cta-group">
+          <a href="index.html#waitlist" class="btn btn--primary">
+            Get Early Access — $20/mo
+          </a>
+          <p class="hero__microcopy">Cancel anytime · No credit card required to join waitlist</p>
+        </div>
+
+        <div class="hero__social-proof">
+          <span class="hero__stars">★★★★★</span>
+          <span>Built by entrepreneurs, for entrepreneurs</span>
+        </div>
+      </div>
+
+      <div class="lab-card-stack" aria-hidden="true">
+        <div class="lab-card lab-card--rear"></div>
+        <div class="lab-card lab-card--mid"></div>
+        <div class="lab-card lab-card--front">
+          <div class="lab-drive">
+            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M22.5 10 11 30l10.5 18h21L53 30 41.5 10h-19Z" fill="#34A853"/>
+              <path d="M22.5 10 32 26h21L41.5 10h-19Z" fill="#FBBC05"/>
+              <path d="M11 30h21l10 18H21.5L11 30Z" fill="#4285F4"/>
+            </svg>
+          </div>
+          <div class="lab-card__meta">
+            <strong>One system. Multiple surfaces.</strong>
+            Same copy, CTA, and hierarchy — just different motion behaviors for testing.
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+  <script>
+    (function () {
+      const root = document.documentElement;
+      const aurora = document.getElementById('aurora-layer');
+      const spotlight = document.getElementById('spotlight-layer');
+      const ripple = document.getElementById('ripple-layer');
+      const buttons = Array.from(document.querySelectorAll('.lab-variant'));
+      let currentVariant = 'constellation';
+
+      function setMouse(x, y) {
+        root.style.setProperty('--mx', x + 'px');
+        root.style.setProperty('--my', y + 'px');
+      }
+
+      function constellationConfig() {
+        return {
+          particles: {
+            number: { value: 80, density: { enable: true, value_area: 800 } },
+            color: { value: '#7c3aed' },
+            shape: { type: 'circle' },
+            opacity: { value: 0, random: false },
+            size: { value: 2.5, random: true },
+            line_linked: { enable: true, distance: 140, color: '#7c3aed', opacity: 0.25, width: 1 },
+            move: { enable: true, speed: 1.2, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+          },
+          interactivity: {
+            detect_on: 'window',
+            events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'push' }, resize: true },
+            modes: { repulse: { distance: 120, duration: 0.5 }, push: { particles_nb: 5 } }
+          },
+          retina_detect: true
+        };
+      }
+
+      function auroraConfig() {
+        return {
+          particles: {
+            number: { value: 64, density: { enable: true, value_area: 900 } },
+            color: { value: ['#7c3aed', '#4f46e5', '#8b5cf6'] },
+            shape: { type: 'circle' },
+            opacity: { value: 0.04, random: true },
+            size: { value: 3.2, random: true },
+            line_linked: { enable: true, distance: 160, color: '#7c3aed', opacity: 0.12, width: 1 },
+            move: { enable: true, speed: 1.0, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+          },
+          interactivity: {
+            detect_on: 'window',
+            events: { onhover: { enable: true, mode: 'grab' }, onclick: { enable: false }, resize: true },
+            modes: { grab: { distance: 180, line_linked: { opacity: 0.22 } } }
+          },
+          retina_detect: true
+        };
+      }
+
+      function spotlightConfig() {
+        return {
+          particles: {
+            number: { value: 52, density: { enable: true, value_area: 900 } },
+            color: { value: '#7c3aed' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.03, random: true },
+            size: { value: 2.8, random: true },
+            line_linked: { enable: true, distance: 170, color: '#a855f7', opacity: 0.16, width: 1 },
+            move: { enable: true, speed: 0.9, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+          },
+          interactivity: {
+            detect_on: 'window',
+            events: { onhover: { enable: true, mode: 'bubble' }, onclick: { enable: false }, resize: true },
+            modes: { bubble: { distance: 160, size: 5, duration: 0.4, opacity: 0.08, speed: 3 } }
+          },
+          retina_detect: true
+        };
+      }
+
+      function rippleConfig() {
+        return {
+          particles: {
+            number: { value: 72, density: { enable: true, value_area: 900 } },
+            color: { value: '#7c3aed' },
+            shape: { type: 'circle' },
+            opacity: { value: 0.02, random: true },
+            size: { value: 2.4, random: true },
+            line_linked: { enable: true, distance: 145, color: '#7c3aed', opacity: 0.18, width: 1 },
+            move: { enable: true, speed: 1.15, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false }
+          },
+          interactivity: {
+            detect_on: 'window',
+            events: { onhover: { enable: true, mode: 'repulse' }, onclick: { enable: true, mode: 'repulse' }, resize: true },
+            modes: { repulse: { distance: 180, duration: 0.55 }, push: { particles_nb: 0 } }
+          },
+          retina_detect: true
+        };
+      }
+
+      function activateVariant(name) {
+        currentVariant = name;
+        buttons.forEach((button) => button.classList.toggle('lab-variant--active', button.dataset.variant === name));
+        aurora.classList.toggle('aurora-layer--active', name === 'aurora');
+        spotlight.classList.toggle('spotlight-layer--active', name === 'spotlight');
+        ripple.classList.toggle('ripple-layer--active', name === 'ripple');
+
+        if (window.pJSDom && window.pJSDom.length) {
+          window.pJSDom.forEach((instance) => {
+            if (instance && instance.pJS && instance.pJS.fn && instance.pJS.fn.vendors && instance.pJS.fn.vendors.destroypJS) {
+              instance.pJS.fn.vendors.destroypJS();
+            }
+          });
+          window.pJSDom = [];
+        }
+
+        const configMap = {
+          constellation: constellationConfig,
+          aurora: auroraConfig,
+          spotlight: spotlightConfig,
+          ripple: rippleConfig,
+        };
+        particlesJS('particles-js', configMap[name]());
+      }
+
+      buttons.forEach((button) => {
+        button.addEventListener('click', function () {
+          activateVariant(button.dataset.variant);
+        });
+      });
+
+      window.addEventListener('mousemove', function (event) {
+        setMouse(event.clientX, event.clientY);
+      }, { passive: true });
+
+      window.addEventListener('touchmove', function (event) {
+        if (!event.touches || !event.touches[0]) return;
+        setMouse(event.touches[0].clientX, event.touches[0].clientY);
+      }, { passive: true });
+
+      setMouse(window.innerWidth * 0.58, window.innerHeight * 0.42);
+      activateVariant(currentVariant);
+    })();
+  </script>
+</body>
+</html>
