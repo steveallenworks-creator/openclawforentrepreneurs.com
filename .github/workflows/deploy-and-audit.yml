@@ -1,0 +1,196 @@
+name: Deploy & Lighthouse Audit
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:  # Allow manual trigger
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  audit:
+    name: Lighthouse Audit
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Lighthouse
+        run: npm install -g lighthouse
+
+      - name: Install HTTP Server
+        run: npm install -g http-server
+
+      - name: Start local server
+        run: |
+          # Start server in background on port 8080, serving from repo root
+          http-server -p 8080 -c-1 &
+          SERVER_PID=$!
+          echo "SERVER_PID=$SERVER_PID" >> $GITHUB_ENV
+
+          # Wait for server to start
+          sleep 3
+
+          # Verify server is running
+          curl -f http://localhost:8080/ > /dev/null || (echo "Server failed to start"; kill $SERVER_PID; exit 1)
+
+      - name: Run Lighthouse audit
+        id: lighthouse
+        run: |
+          # Create output directory
+          mkdir -p ./lighthouse-reports
+
+          # Run Lighthouse and generate JSON report
+          lighthouse http://localhost:8080/ \
+            --output=json \
+            --output-path=./lighthouse-reports/lighthouse-report.json \
+            --chrome-flags="--headless=new --no-sandbox"
+
+          # Also generate HTML for reference
+          lighthouse http://localhost:8080/ \
+            --output=html \
+            --output-path=./lighthouse-reports/lighthouse-report.html \
+            --chrome-flags="--headless=new --no-sandbox"
+
+          # Extract summary metrics for GitHub output
+          echo "audit_complete=true" >> $GITHUB_OUTPUT
+
+      - name: Parse and display metrics
+        if: success()
+        run: |
+          echo "## 🚀 Lighthouse Audit Results" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+
+          # Extract scores from JSON report
+          node -e "
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('./lighthouse-reports/lighthouse-report.json'));
+            const scores = report.categories;
+
+            console.log('| Category | Score |');
+            console.log('|----------|-------|');
+            for (const [key, cat] of Object.entries(scores)) {
+              const score = Math.round(cat.score * 100);
+              const emoji = score >= 90 ? '✅' : score >= 50 ? '⚠️' : '❌';
+              console.log(\`| \${emoji} \${cat.title} | \${score}/100 |\`);
+            }
+          " | tee -a $GITHUB_STEP_SUMMARY
+
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Audit timestamp:** $(date -u +'%Y-%m-%dT%H:%M:%SZ')" >> $GITHUB_STEP_SUMMARY
+
+      - name: Upload Lighthouse artifacts
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: lighthouse-report
+          path: lighthouse-reports/
+          retention-days: 90
+
+      - name: Create/Update Lighthouse Results branch
+        if: success()
+        run: |
+          # This creates a gh-pages-style branch for storing reports
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # Store report metadata
+          REPORT_DATE=$(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          REPORT_COMMIT=$(git rev-parse --short HEAD)
+
+          # Save report summary
+          node -e "
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('./lighthouse-reports/lighthouse-report.json'));
+
+            const summary = {
+              timestamp: '${REPORT_DATE}',
+              commit: '${REPORT_COMMIT}',
+              categories: {},
+              metrics: {}
+            };
+
+            for (const [key, cat] of Object.entries(report.categories)) {
+              summary.categories[key] = {
+                title: cat.title,
+                score: cat.score
+              };
+            }
+
+            if (report.audits) {
+              summary.metrics = {
+                firstContentfulPaint: report.audits['first-contentful-paint']?.numericValue || 0,
+                largestContentfulPaint: report.audits['largest-contentful-paint']?.numericValue || 0,
+                cumulativeLayoutShift: report.audits['cumulative-layout-shift']?.numericValue || 0,
+                interactive: report.audits['interactive']?.numericValue || 0
+              };
+            }
+
+            fs.writeFileSync('./lighthouse-reports/summary.json', JSON.stringify(summary, null, 2));
+          "
+
+      - name: Comment on commit (if PR exists)
+        if: github.event_name == 'pull_request' && success()
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const fs = require('fs');
+            const report = JSON.parse(fs.readFileSync('./lighthouse-reports/lighthouse-report.json'));
+            const scores = report.categories;
+
+            let comment = '## 🔍 Lighthouse Audit Results\n\n';
+            comment += '| Category | Score |\n';
+            comment += '|----------|-------|\n';
+
+            for (const [key, cat] of Object.entries(scores)) {
+              const score = Math.round(cat.score * 100);
+              const emoji = score >= 90 ? '✅' : score >= 50 ? '⚠️' : '❌';
+              comment += `| ${emoji} ${cat.title} | ${score}/100 |\n`;
+            }
+
+            github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body: comment
+            });
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: audit
+    runs-on: ubuntu-latest
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
