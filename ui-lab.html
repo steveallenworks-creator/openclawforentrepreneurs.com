@@ -16,15 +16,14 @@
     }
 
     .full-page-background {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      min-height: 100vh; /* Ensure it covers at least the viewport height */
-      z-index: -1; /* Place it behind everything */
-      overflow: hidden; /* Prevent background elements from causing scrollbars */
+      position: fixed;
+      inset: 0;
+      z-index: 0;
+      overflow: hidden;
     }
+
+    /* Content layers above the fixed background */
+    .nav, .lab-shell, .lab-page-content { position: relative; z-index: 1; }
 
     .lab-stars,
     .lab-stars::before,
@@ -339,6 +338,41 @@
       margin-bottom: 4px;
     }
 
+    /* Auto-cycle timer bar */
+    .lab-timer-wrap {
+      margin: 12px 0 4px;
+    }
+    .lab-timer-track {
+      height: 3px;
+      background: rgba(255,255,255,0.08);
+      border-radius: 2px;
+      overflow: hidden;
+      margin-bottom: 6px;
+    }
+    .lab-timer-bar {
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #7c3aed, #9d5cf6, #7c3aed);
+      background-size: 200% 100%;
+      border-radius: 2px;
+      transform-origin: left center;
+      animation: none;
+    }
+    .lab-timer-bar--running {
+      animation: timerCountdown 10s linear forwards;
+    }
+    .lab-timer-label {
+      font-size: 0.72rem;
+      color: #888;
+      letter-spacing: 0.05em;
+    }
+    @keyframes timerCountdown {
+      from { transform: scaleX(1); }
+      to   { transform: scaleX(0); }
+    }
+    body[data-theme="day"] .lab-timer-bar { background: linear-gradient(90deg, #d97706, #fbbf24, #d97706); background-size: 200% 100%; }
+    body[data-theme="day"] .lab-timer-label { color: #7c5c3a; }
+
     @keyframes driftStars {
       from { transform: translate3d(0, 0, 0); }
       to { transform: translate3d(-32px, -18px, 0); }
@@ -408,6 +442,11 @@
           <button class="lab-autocycle-btn" id="lab-autocycle">Auto-cycle: OFF</button>
         </div>
         <button class="lab-cycle-btn" id="lab-next" aria-label="Next variant">&#9654;</button>
+      </div>
+      <!-- Timer bar — visible when auto-cycle is on -->
+      <div class="lab-timer-wrap" id="lab-timer-wrap" style="display:none">
+        <div class="lab-timer-track"><div class="lab-timer-bar" id="lab-timer-bar"></div></div>
+        <span class="lab-timer-label" id="lab-timer-label">Next variant in 10s</span>
       </div>
 
       <div class="lab-variants">
@@ -593,9 +632,8 @@
         }
 
         function resize() {
-          const rect = canvas.getBoundingClientRect();
-          width = Math.max(1, rect.width || window.innerWidth);
-          height = Math.max(1, rect.height || window.innerHeight);
+          width = window.innerWidth;
+          height = window.innerHeight;
           canvas.width = Math.round(width * dpr);
           canvas.height = Math.round(height * dpr);
           ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
@@ -948,20 +986,10 @@
         return variants[currentVariant] || variants.constellation;
       });
 
-      const auroraEl   = document.querySelector('.page-bg__aurora');
-      const cursorHalo = document.getElementById('cursor-halo');
-
       function updateGlowLayers(px, py) {
-        if (!auroraEl) return;
-        const t=themeBlend, ac=lerpRGB([124,58,237],[251,191,36],t), bc=lerpRGB([79,70,229],[249,115,22],t);
-        const ao=lerp(0.28,0.70,t).toFixed(3), bo=lerp(0.18,0.40,t).toFixed(3);
-        auroraEl.style.background =
-          'radial-gradient(circle 340px at '+px+'px '+py+'px,rgba('+ac[0]+','+ac[1]+','+ac[2]+','+ao+'),transparent 65%),' +
-          'radial-gradient(circle 440px at '+(px-80)+'px '+(py+60)+'px,rgba('+bc[0]+','+bc[1]+','+bc[2]+','+bo+'),transparent 68%)';
-        if (cursorHalo) {
-          const ha=(0.18*t).toFixed(3);
-          cursorHalo.style.background='radial-gradient(circle 300px at '+px+'px '+py+'px,rgba(251,191,36,'+ha+'),transparent 70%)';
-        }
+        /* Drive the CSS-variable-based aurora in .lab-aurora */
+        root.style.setProperty('--mx', String(Math.round(px)));
+        root.style.setProperty('--my', String(Math.round(py)));
       }
 
       function applyLabTheme(theme) {
@@ -1003,17 +1031,42 @@
       const autoCycleBtn = document.getElementById('lab-autocycle');
       const cycleLabel   = document.getElementById('lab-cycle-label');
 
+      const timerWrap = document.getElementById('lab-timer-wrap');
+      const timerBar  = document.getElementById('lab-timer-bar');
+      const timerLabel = document.getElementById('lab-timer-label');
+
+      function resetTimerBar() {
+        if (!timerBar) return;
+        timerBar.classList.remove('lab-timer-bar--running');
+        void timerBar.offsetWidth; /* force reflow to restart animation */
+        timerBar.classList.add('lab-timer-bar--running');
+        /* Also update label every second */
+        let secs = 10;
+        if (window._timerLabelInterval) clearInterval(window._timerLabelInterval);
+        window._timerLabelInterval = setInterval(function() {
+          secs = Math.max(0, secs - 1);
+          if (timerLabel) timerLabel.textContent = 'Next variant in ' + secs + 's';
+          if (secs <= 0) clearInterval(window._timerLabelInterval);
+        }, 1000);
+        if (timerLabel) timerLabel.textContent = 'Next variant in 10s';
+      }
+
       function toggleAutoCycle() {
         autoCycleOn = !autoCycleOn;
         if (autoCycleBtn) { autoCycleBtn.textContent='Auto-cycle: '+(autoCycleOn?'ON':'OFF'); autoCycleBtn.classList.toggle('active',autoCycleOn); }
         if (cycleLabel) cycleLabel.textContent = autoCycleOn ? 'Auto' : 'Manual';
+        if (timerWrap) timerWrap.style.display = autoCycleOn ? 'block' : 'none';
         if (autoCycleOn) {
+          resetTimerBar();
           autoCycleInterval = setInterval(function() {
             const idx=(VARIANT_ORDER.indexOf(currentVariant)+1)%VARIANT_ORDER.length;
             activateVariant(VARIANT_ORDER[idx]);
+            resetTimerBar();
           }, 10000);
         } else {
           if (autoCycleInterval) { clearInterval(autoCycleInterval); autoCycleInterval=null; }
+          if (timerBar) timerBar.classList.remove('lab-timer-bar--running');
+          if (window._timerLabelInterval) clearInterval(window._timerLabelInterval);
         }
       }
 

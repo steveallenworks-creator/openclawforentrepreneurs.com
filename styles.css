@@ -330,7 +330,7 @@ code, pre {
 }
 
 .feature-card {
-  background: var(--surface-2);
+  background: rgba(22, 22, 22, 0.78);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 32px;
@@ -474,7 +474,7 @@ code, pre {
 }
 
 .hardware-card {
-  background: var(--surface);
+  background: rgba(17, 17, 17, 0.78);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 28px 24px;
@@ -572,7 +572,7 @@ code, pre {
 .hardware-card__link::after { content: ' →'; }
 
 .callout-box {
-  background: var(--surface);
+  background: rgba(17, 17, 17, 0.82);
   border: 1px solid var(--accent);
   border-radius: var(--radius-md);
   padding: 28px 32px;
@@ -601,7 +601,7 @@ code, pre {
 }
 
 .pricing-card {
-  background: var(--surface);
+  background: rgba(17, 17, 17, 0.78);
   border: 1px solid var(--border);
   border-radius: var(--radius-md);
   padding: 36px 28px;
@@ -620,7 +620,7 @@ code, pre {
 .pricing-card--featured {
   border-color: var(--accent);
   box-shadow: var(--accent-glow);
-  background: linear-gradient(160deg, #111111 0%, #16102a 100%);
+  background: linear-gradient(160deg, rgba(17,17,17,0.88) 0%, rgba(22,16,42,0.88) 100%);
 }
 
 .pricing-card__badge {
@@ -863,7 +863,7 @@ code, pre {
 
 /* ─── FOOTER ────────────────────────────────────────────────── */
 .footer {
-  background: #050505;
+  background: rgba(5, 5, 5, 0.88);
   border-top: 1px solid var(--border);
   padding: 40px 24px;
   text-align: center;
