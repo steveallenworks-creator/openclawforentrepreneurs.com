@@ -123,6 +123,7 @@
       position: fixed;
       top: 88px;
       right: 24px;
+      bottom: 24px;
       z-index: 10;
       width: min(320px, calc(100vw - 48px));
       background: rgba(12, 12, 16, 0.88);
@@ -131,6 +132,7 @@
       backdrop-filter: blur(16px);
       box-shadow: 0 24px 80px rgba(0,0,0,0.45);
       padding: 20px;
+      overflow-y: auto;
       transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
     }
     .lab-panel__eyebrow {
@@ -406,6 +408,68 @@
       .hero__headline { font-size: clamp(2.2rem, 10vw, 4rem); }
       .hero__sub { font-size: 1rem; }
     }
+    /* ── BUTTON BORDER ANIMATIONS ──────────────── */
+    .btn--primary.btn-anim {
+      position: relative;
+      overflow: hidden;
+      z-index: 1;
+    }
+    .btn--primary.btn-anim::before {
+      content: '';
+      position: absolute;
+      inset: -2px;
+      border-radius: 6px;
+      z-index: -1;
+      opacity: 0;
+      transition: opacity 0.3s ease;
+    }
+    .btn--primary.btn-anim.active::before { opacity: 1; }
+
+    /* Slit: white highlight orbits the border */
+    .btn--primary.btn-anim.btn-slit::before {
+      background: conic-gradient(from var(--btn-angle, 0deg), transparent 0deg, transparent 340deg, rgba(255,255,255,0.9) 350deg, rgba(255,255,255,0.95) 355deg, transparent 360deg);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      padding: 2px;
+      animation: btn-slit-rotate 2.2s linear infinite;
+    }
+    @keyframes btn-slit-rotate { to { --btn-angle: 360deg; } }
+    @property --btn-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
+
+    /* Comet: glowing dot with trail */
+    .btn--primary.btn-anim.btn-comet::before {
+      background: conic-gradient(from var(--btn-angle, 0deg), transparent 0deg, transparent 300deg, rgba(167,139,250,0.3) 330deg, rgba(167,139,250,0.8) 350deg, rgba(255,255,255,0.95) 358deg, transparent 360deg);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      padding: 2px;
+      animation: btn-slit-rotate 2.8s linear infinite;
+    }
+
+    /* Pulse: sweeping glow wave */
+    .btn--primary.btn-anim.btn-pulse::before {
+      background: conic-gradient(from var(--btn-angle, 0deg), rgba(124,58,237,0.15) 0deg, rgba(124,58,237,0.6) 40deg, rgba(167,139,250,0.9) 80deg, rgba(124,58,237,0.6) 120deg, rgba(124,58,237,0.15) 160deg, transparent 200deg, transparent 360deg);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      padding: 2px;
+      animation: btn-slit-rotate 3s linear infinite;
+    }
+
+    /* Dual: two dots chasing each other */
+    .btn--primary.btn-anim.btn-dual::before {
+      background: conic-gradient(from var(--btn-angle, 0deg), transparent 0deg, rgba(255,255,255,0.9) 8deg, transparent 16deg, transparent 170deg, rgba(167,139,250,0.9) 178deg, transparent 186deg, transparent 360deg);
+      mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      -webkit-mask-composite: xor;
+      padding: 2px;
+      animation: btn-slit-rotate 2s linear infinite;
+    }
   </style>
 </head>
 <body data-variant="constellation" data-theme="night">
@@ -505,6 +569,22 @@
         <button class="lab-variant" data-variant="shootingstars">
           <span class="lab-variant__name">☄️ Shooting Stars</span>
           <span class="lab-variant__desc">Random shooting stars streak across every section. Fades in, blazes, fades out.</span>
+        </button>
+        <button class="lab-variant" data-variant="btn-slit">
+          <span class="lab-variant__name">🔲 Button: Light Slit</span>
+          <span class="lab-variant__desc">A white slit of light orbits the CTA button border continuously.</span>
+        </button>
+        <button class="lab-variant" data-variant="btn-comet">
+          <span class="lab-variant__name">🔲 Button: Comet Trail</span>
+          <span class="lab-variant__desc">A glowing dot with a fading trail traces the button border.</span>
+        </button>
+        <button class="lab-variant" data-variant="btn-pulse">
+          <span class="lab-variant__name">🔲 Button: Pulse Glow</span>
+          <span class="lab-variant__desc">The border pulses with a traveling glow wave that sweeps around.</span>
+        </button>
+        <button class="lab-variant" data-variant="btn-dual">
+          <span class="lab-variant__name">🔲 Button: Dual Chase</span>
+          <span class="lab-variant__desc">Two light points chase each other around the border in opposite directions.</span>
         </button>
       </div>
       <div class="lab-links">
@@ -1036,7 +1116,7 @@
         }
       };
 
-      const VARIANT_ORDER = ['constellation','aurora','magnetic','swarm','vortex','shockwave','neuralweb','hyperspeed','cosmiccalm','chaos','day-full','night-full','day-night','shootingstars'];
+      const VARIANT_ORDER = ['constellation','aurora','magnetic','swarm','vortex','shockwave','neuralweb','hyperspeed','cosmiccalm','chaos','day-full','night-full','day-night','shootingstars','btn-slit','btn-comet','btn-pulse','btn-dual'];
 
       let dayNightInterval = null;
       let themeBlend = 0, themeTarget = 0;
@@ -1142,6 +1222,14 @@
       if (prevBtn) prevBtn.addEventListener('click', function() { const idx=VARIANT_ORDER.indexOf(currentVariant); activateVariant(VARIANT_ORDER[(idx-1+VARIANT_ORDER.length)%VARIANT_ORDER.length]); });
       if (nextBtn) nextBtn.addEventListener('click', function() { const idx=VARIANT_ORDER.indexOf(currentVariant); activateVariant(VARIANT_ORDER[(idx+1)%VARIANT_ORDER.length]); });
 
+      var BTN_VARIANTS = ['btn-slit','btn-comet','btn-pulse','btn-dual'];
+      var ctaBtn = document.querySelector('.hero__cta-group .btn--primary');
+
+      function clearBtnAnim() {
+        if (!ctaBtn) return;
+        ctaBtn.classList.remove('btn-anim','active','btn-slit','btn-comet','btn-pulse','btn-dual');
+      }
+
       function activateVariant(name) {
         currentVariant = name;
         buttons.forEach((button) => { button.classList.toggle('lab-variant--active', button.dataset.variant===name); });
@@ -1149,6 +1237,10 @@
         if (activeBtn) activeBtn.scrollIntoView({block:'nearest', behavior:'smooth'});
         stopCycle();
         field.setShootingStars(name === 'shootingstars');
+        clearBtnAnim();
+        if (BTN_VARIANTS.indexOf(name) !== -1 && ctaBtn) {
+          ctaBtn.classList.add('btn-anim', name, 'active');
+        }
         if (name === 'day-night') {
           body.setAttribute('data-variant', name);
           applyLabTheme('night');
@@ -1156,6 +1248,10 @@
         } else if (name === 'day-full') {
           body.setAttribute('data-variant', name);
           applyLabTheme('day');
+          field.reseed();
+        } else if (BTN_VARIANTS.indexOf(name) !== -1) {
+          body.setAttribute('data-variant', 'constellation');
+          applyLabTheme('night');
           field.reseed();
         } else if (name === 'shootingstars') {
           body.setAttribute('data-variant', name);
