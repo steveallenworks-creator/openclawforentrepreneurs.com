@@ -10,12 +10,116 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="styles.css" />
   <style>
-    .lab-shell {
-      position: relative;
-      min-height: 100vh;
-      overflow: hidden;
-      background: #0a0a0a;
+    body {
+      background-color: #0a0a0a; /* Default/Night fallback */
+      transition: background-color 0.5s ease;
     }
+
+    .full-page-background {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100vh; /* Ensure it covers at least the viewport height */
+      z-index: -1; /* Place it behind everything */
+      overflow: hidden; /* Prevent background elements from causing scrollbars */
+    }
+
+    .lab-stars,
+    .lab-stars::before,
+    .lab-stars::after,
+    .lab-aurora,
+    .lab-vignette,
+    .lab-canvas {
+      position: absolute; /* Changed from fixed to absolute */
+      inset: 0;
+      pointer-events: none;
+      transition: opacity 0.5s ease, background 0.5s ease; /* For Day/Night transition */
+    }
+    .lab-stars,
+    .lab-stars::before,
+    .lab-stars::after {
+      content: "";
+      z-index: 0;
+    }
+
+    /* Night Mode Backgrounds */
+    body[data-theme="night"] .lab-stars,
+    .lab-stars { /* Default is night */
+      background:
+        radial-gradient(circle at 20% 20%, rgba(124,58,237,0.10), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(79,70,229,0.08), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(168,85,247,0.08), transparent 24%),
+        #0a0a0a;
+    }
+    body[data-theme="night"] .lab-stars::before,
+    .lab-stars::before {
+      opacity: 0.92;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.90) 0.85px, transparent 1.2px),
+        radial-gradient(circle, rgba(196,181,253,0.74) 0.78px, transparent 1.18px),
+        radial-gradient(circle, rgba(255,255,255,0.50) 0.66px, transparent 1.02px);
+      background-size: 150px 150px, 220px 220px, 320px 320px;
+      background-position: 0 0, 70px 110px, 140px 40px;
+      animation: driftStars 48s linear infinite;
+    }
+    body[data-theme="night"] .lab-stars::after,
+    .lab-stars::after {
+      opacity: 0.42;
+      background-image:
+        radial-gradient(circle, rgba(124,58,237,0.48) 1px, transparent 1.45px),
+        radial-gradient(circle, rgba(255,255,255,0.22) 0.8px, transparent 1.2px);
+      background-size: 360px 360px, 480px 480px;
+      background-position: 40px 80px, 200px 120px;
+      animation: driftStarsReverse 72s linear infinite;
+    }
+    body[data-theme="night"] .lab-aurora,
+    .lab-aurora {
+      opacity: 0.28;
+      background:
+        radial-gradient(circle 320px at calc(var(--mx, 50) * 1px) calc(var(--my, 50) * 1px), rgba(124,58,237,0.20), transparent 65%),
+        radial-gradient(circle 420px at calc(var(--mx, 50) * 1px - 12%) calc(var(--my, 50) * 1px + 8%), rgba(79,70,229,0.14), transparent 68%);
+      filter: blur(36px);
+    }
+    .lab-vignette {
+      background: radial-gradient(ellipse 92% 86% at 50% 50%, transparent 36%, rgba(10,10,10,0.82) 100%);
+      z-index: 2;
+    }
+
+
+    /* Day Mode Backgrounds */
+    body[data-theme="day"] {
+      background-color: #f0f0f0;
+    }
+    body[data-theme="day"] .lab-stars {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(255, 240, 200, 0.2), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(255, 230, 180, 0.2), transparent 24%),
+        #f0f0f0;
+    }
+    body[data-theme="day"] .lab-stars::before {
+      opacity: 0.92;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.90) 0.85px, transparent 1.2px),
+        radial-gradient(circle, rgba(255,240,200,0.74) 0.78px, transparent 1.18px),
+        radial-gradient(circle, rgba(255,255,255,0.50) 0.66px, transparent 1.02px);
+    }
+    body[data-theme="day"] .lab-stars::after {
+      opacity: 0.42;
+      background-image:
+        radial-gradient(circle, rgba(255,200,100,0.48) 1px, transparent 1.45px),
+        radial-gradient(circle, rgba(255,255,255,0.22) 0.8px, transparent 1.2px);
+    }
+    body[data-theme="day"] .lab-aurora {
+      opacity: 0.8;
+      background:
+        radial-gradient(circle 320px at calc(var(--mx, 50) * 1px) calc(var(--my, 50) * 1px), rgba(255, 200, 100, 0.4), transparent 65%),
+        radial-gradient(circle 420px at calc(var(--mx, 50) * 1px - 12%) calc(var(--my, 50) * 1px + 8%), rgba(255, 220, 150, 0.3), transparent 68%);
+    }
+
+    /* UI Elements - Night Mode */
     .lab-panel {
       position: fixed;
       top: 88px;
@@ -28,6 +132,7 @@
       backdrop-filter: blur(16px);
       box-shadow: 0 24px 80px rgba(0,0,0,0.45);
       padding: 20px;
+      transition: background 0.5s ease, border-color 0.5s ease, box-shadow 0.5s ease;
     }
     .lab-panel__eyebrow {
       font-size: 0.72rem;
@@ -36,18 +141,21 @@
       color: #888;
       margin-bottom: 8px;
       font-weight: 700;
+      transition: color 0.5s ease;
     }
     .lab-panel__title {
       font-size: 1.15rem;
       font-weight: 700;
       color: #f0f0f0;
       margin-bottom: 8px;
+      transition: color 0.5s ease;
     }
     .lab-panel__copy {
       font-size: 0.9rem;
       color: #9a9a9a;
       line-height: 1.5;
       margin-bottom: 18px;
+      transition: color 0.5s ease;
     }
     .lab-variants {
       display: grid;
@@ -62,7 +170,7 @@
       padding: 14px 14px 12px;
       text-align: left;
       cursor: pointer;
-      transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease;
+      transition: border-color 0.2s ease, transform 0.2s ease, background 0.2s ease, color 0.5s ease;
     }
     .lab-variant:hover {
       border-color: #7c3aed88;
@@ -80,12 +188,14 @@
       font-weight: 700;
       margin-bottom: 4px;
       color: #fff;
+      transition: color 0.5s ease;
     }
     .lab-variant__desc {
       display: block;
       font-size: 0.82rem;
       line-height: 1.45;
       color: #9a9a9a;
+      transition: color 0.5s ease;
     }
     .lab-links {
       display: flex;
@@ -96,6 +206,49 @@
     .lab-link {
       font-size: 0.82rem;
       color: #b68cff;
+      transition: color 0.5s ease;
+    }
+
+    /* UI Elements - Day Mode */
+    body[data-theme="day"] .lab-panel {
+      background: rgba(255,255,255,0.88);
+      border: 1px solid #e0e0e0;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.1);
+    }
+    body[data-theme="day"] .lab-panel__eyebrow,
+    body[data-theme="day"] .lab-panel__copy {
+      color: #666;
+    }
+    body[data-theme="day"] .lab-panel__title {
+      color: #333;
+    }
+    body[data-theme="day"] .lab-variant {
+      border: 1px solid #d0d0d0;
+      background: rgba(0,0,0,0.02);
+      color: #444;
+    }
+    body[data-theme="day"] .lab-variant:hover {
+      border-color: #a0a0a088;
+      background: rgba(0,0,0,0.04);
+    }
+    body[data-theme="day"] .lab-variant--active {
+      border-color: #888;
+      background: rgba(0,0,0,0.08);
+      box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset;
+    }
+    body[data-theme="day"] .lab-variant__name {
+      color: #222;
+    }
+    body[data-theme="day"] .lab-link {
+      color: #555;
+    }
+
+    /* Common layout styles */
+    .lab-shell {
+      position: relative;
+      /* min-height: 100vh; */ /* Removed min-height from lab-shell to allow full background to show */
+      overflow: hidden;
+      background: transparent; /* Background handled by full-page-background */
     }
     .hero--lab {
       min-height: 100vh;
@@ -185,164 +338,7 @@
       font-size: 0.82rem;
       margin-bottom: 4px;
     }
-    .lab-stars,
-    .lab-stars::before,
-    .lab-stars::after,
-    .lab-aurora,
-    .lab-vignette,
-    .lab-canvas {
-      position: fixed;
-      inset: 0;
-      pointer-events: none;
-    }
-    .lab-stars,
-    .lab-stars::before,
-    .lab-stars::after {
-      content: "";
-      z-index: 0;
-    }
-    .lab-stars {
-      background:
-        radial-gradient(circle at 20% 20%, rgba(124,58,237,0.10), transparent 24%),
-        radial-gradient(circle at 80% 0%, rgba(79,70,229,0.08), transparent 28%),
-        radial-gradient(circle at 50% 100%, rgba(168,85,247,0.08), transparent 24%),
-        #0a0a0a;
-    }
-    .lab-stars::before {
-      opacity: 0.92;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,0.90) 0.85px, transparent 1.2px),
-        radial-gradient(circle, rgba(196,181,253,0.74) 0.78px, transparent 1.18px),
-        radial-gradient(circle, rgba(255,255,255,0.50) 0.66px, transparent 1.02px);
-      background-size: 150px 150px, 220px 220px, 320px 320px;
-      background-position: 0 0, 70px 110px, 140px 40px;
-      animation: driftStars 48s linear infinite;
-    }
-    .lab-stars::after {
-      opacity: 0.42;
-      background-image:
-        radial-gradient(circle, rgba(124,58,237,0.48) 1px, transparent 1.45px),
-        radial-gradient(circle, rgba(255,255,255,0.22) 0.8px, transparent 1.2px);
-      background-size: 360px 360px, 480px 480px;
-      background-position: 40px 80px, 200px 120px;
-      animation: driftStarsReverse 72s linear infinite;
-    }
-    body[data-theme="day"] .lab-aurora {
-      opacity: 0.8;
-      background:
-        radial-gradient(circle 320px at calc(var(--mx, 50) * 1px) calc(var(--my, 50) * 1px), rgba(255, 200, 100, 0.4), transparent 65%),
-        radial-gradient(circle 420px at calc(var(--mx, 50) * 1px - 12%) calc(var(--my, 50) * 1px + 8%), rgba(255, 220, 150, 0.3), transparent 68%);
-    }
-    body[data-theme="day"] .lab-stars {
-      background:
-        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3), transparent 24%),
-        radial-gradient(circle at 80% 0%, rgba(255, 240, 200, 0.2), transparent 28%),
-        radial-gradient(circle at 50% 100%, rgba(255, 230, 180, 0.2), transparent 24%),
-        #f0f0f0;
-    }
-    body[data-theme="day"] .lab-stars::before {
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,0.90) 0.85px, transparent 1.2px),
-        radial-gradient(circle, rgba(255,240,200,0.74) 0.78px, transparent 1.18px),
-        radial-gradient(circle, rgba(255,255,255,0.50) 0.66px, transparent 1.02px);
-    }
-    body[data-theme="day"] .lab-stars::after {
-      background-image:
-        radial-gradient(circle, rgba(255,200,100,0.48) 1px, transparent 1.45px),
-        radial-gradient(circle, rgba(255,255,255,0.22) 0.8px, transparent 1.2px);
-    }
-    body[data-theme="night"] .lab-aurora,
-    .lab-aurora {
-      opacity: 0.28;
-      background:
-        radial-gradient(circle 320px at calc(var(--mx, 50) * 1px) calc(var(--my, 50) * 1px), rgba(124,58,237,0.20), transparent 65%),
-        radial-gradient(circle 420px at calc(var(--mx, 50) * 1px - 12%) calc(var(--my, 50) * 1px + 8%), rgba(79,70,229,0.14), transparent 68%);
-    }
-    body[data-theme="night"] .lab-stars,
-    .lab-stars {
-      background:
-        radial-gradient(circle at 20% 20%, rgba(124,58,237,0.10), transparent 24%),
-        radial-gradient(circle at 80% 0%, rgba(79,70,229,0.08), transparent 28%),
-        radial-gradient(circle at 50% 100%, rgba(168,85,247,0.08), transparent 24%),
-        #0a0a0a;
-    }
-    body[data-theme="night"] .lab-stars::before,
-    .lab-stars::before {
-      opacity: 0.92;
-      background-image:
-        radial-gradient(circle, rgba(255,255,255,0.90) 0.85px, transparent 1.2px),
-        radial-gradient(circle, rgba(196,181,253,0.74) 0.78px, transparent 1.18px),
-        radial-gradient(circle, rgba(255,255,255,0.50) 0.66px, transparent 1.02px);
-    }
-    body[data-theme="night"] .lab-stars::after,
-    .lab-stars::after {
-      opacity: 0.42;
-      background-image:
-        radial-gradient(circle, rgba(124,58,237,0.48) 1px, transparent 1.45px),
-        radial-gradient(circle, rgba(255,255,255,0.22) 0.8px, transparent 1.2px);
-    }
 
-    body[data-theme="day"] .lab-panel {
-        background: rgba(255,255,255,0.88);
-        border: 1px solid #e0e0e0;
-        box-shadow: 0 24px 80px rgba(0,0,0,0.1);
-    }
-    body[data-theme="day"] .lab-panel__eyebrow,
-    body[data-theme="day"] .lab-panel__copy {
-        color: #666;
-    }
-    body[data-theme="day"] .lab-panel__title {
-        color: #333;
-    }
-    body[data-theme="day"] .lab-variant {
-        border: 1px solid #d0d0d0;
-        background: rgba(0,0,0,0.02);
-        color: #444;
-    }
-    body[data-theme="day"] .lab-variant:hover {
-        border-color: #a0a0a088;
-        background: rgba(0,0,0,0.04);
-    }
-    body[data-theme="day"] .lab-variant--active {
-        border-color: #888;
-        background: rgba(0,0,0,0.08);
-        box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset;
-    }
-    body[data-theme="day"] .lab-variant__name {
-        color: #222;
-    }
-    body[data-theme="day"] .lab-link {
-        color: #555;
-    }
-
-    .lab-aurora,
-    .lab-vignette,
-    .lab-canvas {
-      z-index: 1;
-    }
-    .lab-aurora {
-      transition: opacity 0.5s ease, background 0.5s ease;
-      filter: blur(36px);
-    }
-    body[data-variant="constellation"] .lab-aurora { opacity: 0.12; }
-    body[data-variant="aurora"] .lab-aurora { opacity: 0.48; }
-    body[data-variant="magnetic"] .lab-aurora { opacity: 0.22; }
-    body[data-variant="swarm"] .lab-aurora { opacity: 0.18; }
-    body[data-variant="vortex"] .lab-aurora { opacity: 0.35; }
-    body[data-variant="shockwave"] .lab-aurora { opacity: 0.4; }
-    body[data-variant="neuralweb"] .lab-aurora { opacity: 0.3; }
-    body[data-variant="day-night"] .lab-aurora { opacity: 0.35; }
-
-
-    .lab-canvas {
-      width: 100%;
-      height: 100%;
-      opacity: 0.98;
-    }
-    .lab-vignette {
-      background: radial-gradient(ellipse 92% 86% at 50% 50%, transparent 36%, rgba(10,10,10,0.82) 100%);
-      z-index: 2;
-    }
     @keyframes driftStars {
       from { transform: translate3d(0, 0, 0); }
       to { transform: translate3d(-32px, -18px, 0); }
@@ -378,11 +374,13 @@
     }
   </style>
 </head>
-<body data-variant="constellation">
-  <div class="lab-stars" aria-hidden="true"></div>
-  <div class="lab-aurora" aria-hidden="true"></div>
-  <canvas class="lab-canvas" id="lab-particles" aria-hidden="true"></canvas>
-  <div class="lab-vignette" aria-hidden="true"></div>
+<body data-variant="constellation" data-theme="night">
+  <div class="full-page-background" aria-hidden="true">
+    <div class="lab-stars"></div>
+    <div class="lab-aurora"></div>
+    <canvas class="lab-canvas" id="lab-particles"></canvas>
+    <div class="lab-vignette"></div>
+  </div>
 
   <nav class="nav">
     <div class="nav__logo">
@@ -506,7 +504,7 @@
         const ctx = canvas.getContext('2d');
         if (!ctx) return null;
         const particles = [];
-        const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
+        const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false, speed: 0, wasMoving: false };
         const dpr = Math.min(window.devicePixelRatio || 1, 2);
         let width = 0;
         let height = 0;
@@ -559,8 +557,16 @@
         }
 
         function updatePointer() {
+          const prevPointerX = pointer.x;
+          const prevPointerY = pointer.y;
+
           pointer.x += (pointer.targetX - pointer.x) * 0.16;
           pointer.y += (pointer.targetY - pointer.y) * 0.16;
+
+          const pointerMovedX = pointer.x - prevPointerX;
+          const pointerMovedY = pointer.y - prevPointerY;
+          pointer.speed = Math.hypot(pointerMovedX, pointerMovedY);
+          pointer.wasMoving = pointer.speed > 5; // Threshold for considering it "moving"
         }
 
         function stepParticle(p, cfg, time) {
@@ -634,17 +640,6 @@
           const cfg = variant();
           ctx.clearRect(0, 0, width, height);
           updatePointer();
-
-          // Calculate pointer speed for shockwave
-          const prevPointerX = pointer.x;
-          const prevPointerY = pointer.y;
-          pointer.x = pointer.targetX;
-          pointer.y = pointer.targetY;
-          const pointerMovedX = pointer.x - prevPointerX;
-          const pointerMovedY = pointer.y - prevPointerY;
-          pointer.speed = Math.hypot(pointerMovedX, pointerMovedY);
-          pointer.wasMoving = pointer.speed > 5; // Threshold for considering it "moving"
-
 
           particles.forEach(function (p) {
             stepParticle(p, cfg, time || 0);
@@ -722,7 +717,8 @@
           lineDistance: 156, lineOpacity: 0.24, lineWidth: 1.05,
           lineColor: [124, 58, 237], nodeColor: [245, 244, 255], glowColor: [167, 139, 250],
           nodeOpacity: 0.92, twinkleSpeed: 1, leaderRate: 0.02, leaderBias: 0.2,
-          pointerLineRadius: 260, pointerLineBoost: 3.4, pointerNodeRadius: 220, pointerNodeScale: 2.8, pointerAlphaBoost: 1.4
+          pointerLineRadius: 260, pointerLineBoost: 3.4, pointerNodeRadius: 220, pointerNodeScale: 2.8, pointerAlphaBoost: 1.4,
+          alwaysInteractive: false
         },
         aurora: {
           count: 132, seedVelocity: 0.46, minSize: 0.58, maxSize: 1.72,
@@ -731,7 +727,8 @@
           lineDistance: 124, lineOpacity: 0.09, lineWidth: 0.9,
           lineColor: [99, 102, 241], nodeColor: [219, 234, 254], glowColor: [129, 140, 248],
           nodeOpacity: 0.76, twinkleSpeed: 1.25, leaderRate: 0.05, leaderBias: 0.65,
-          pointerLineRadius: 180, pointerLineBoost: 1.1, pointerNodeRadius: 160, pointerNodeScale: 0.9, pointerAlphaBoost: 0.5
+          pointerLineRadius: 180, pointerLineBoost: 1.1, pointerNodeRadius: 160, pointerNodeScale: 0.9, pointerAlphaBoost: 0.5,
+          alwaysInteractive: false
         },
         magnetic: {
           count: 110, seedVelocity: 0.45, minSize: 0.72, maxSize: 2.8,
@@ -750,7 +747,8 @@
           lineDistance: 116, lineOpacity: 0.15, lineWidth: 0.9,
           lineColor: [56, 189, 248], nodeColor: [240, 249, 255], glowColor: [56, 189, 248],
           nodeOpacity: 0.86, twinkleSpeed: 1.12, leaderRate: 0.10, leaderBias: 1.15,
-          pointerLineRadius: 170, pointerLineBoost: 1.0, pointerNodeRadius: 150, pointerNodeScale: 1.1, pointerAlphaBoost: 0.6
+          pointerLineRadius: 170, pointerLineBoost: 1.0, pointerNodeRadius: 150, pointerNodeScale: 1.1, pointerAlphaBoost: 0.6,
+          alwaysInteractive: true
         },
         vortex: {
             count: 100, seedVelocity: 0.5, minSize: 0.8, maxSize: 2.5,
@@ -785,7 +783,7 @@
             pointerLineRadius: 200, pointerLineBoost: 4.0, pointerNodeRadius: 180, pointerNodeScale: 3.0, pointerAlphaBoost: 2.0,
             alwaysInteractive: true
         },
-        day: { // Configuration for Day mode particles
+        day: { // Configuration for Day mode particles - used by day-night variant
             count: 100, seedVelocity: 0.2, minSize: 0.8, maxSize: 2.5,
             driftForce: 0.8, flowScale: 0.8, friction: 0.98, radius: 200,
             attract: 0.03, swirl: 0.01, repel: 0.002,
@@ -795,7 +793,7 @@
             pointerLineRadius: 200, pointerLineBoost: 2.0, pointerNodeRadius: 180, pointerNodeScale: 2.0, pointerAlphaBoost: 1.0,
             alwaysInteractive: false
         },
-        night: { // Configuration for Night mode particles
+        night: { // Configuration for Night mode particles - used by day-night variant
             count: 96, seedVelocity: 0.30, minSize: 0.68, maxSize: 2.0,
             driftForce: 1.0, flowScale: 1.0, friction: 0.982, radius: 220,
             attract: 0.050, swirl: 0.030, repel: 0.004,
@@ -824,7 +822,7 @@
 
       function startDayNightCycle() {
         if (dayNightInterval) clearInterval(dayNightInterval);
-        let isDay = false;
+        let isDay = body.getAttribute('data-theme') === 'day'; // Get initial theme from body
         const toggleDayNight = () => {
             isDay = !isDay;
             body.setAttribute('data-theme', isDay ? 'day' : 'night');
@@ -839,7 +837,8 @@
             clearInterval(dayNightInterval);
             dayNightInterval = null;
         }
-        body.removeAttribute('data-theme');
+        // When stopping, revert to default night theme (or whatever the body's default data-theme is)
+        body.setAttribute('data-theme', 'night');
       }
 
       function activateVariant(name) {
@@ -851,10 +850,12 @@
         stopDayNightCycle(); // Stop any active cycle
 
         if (name === 'day-night') {
-            startDayNightCycle();
             body.setAttribute('data-variant', name); // Still set data-variant for general styling
+            // Initial state for day-night cycle is 'night' as per body data-theme default
+            startDayNightCycle();
         } else {
             body.setAttribute('data-variant', name);
+            body.setAttribute('data-theme', 'night'); // Ensure other variants revert to night theme
             field.reseed();
         }
       }
@@ -888,9 +889,15 @@
       
       // Initialize the active variant and potentially start day/night cycle
       const initialVariant = body.getAttribute('data-variant');
-      if (initialVariant === 'day-night') {
+      const initialTheme = body.getAttribute('data-theme');
+      if (initialVariant === 'day-night' && initialTheme === 'day') { // If it starts in day-night mode and is already day
+          body.setAttribute('data-theme', 'day'); // Explicitly set it, then cycle will toggle to night
           startDayNightCycle();
-      } else {
+      } else if (initialVariant === 'day-night' && initialTheme === 'night') { // If it starts in day-night mode and is already night
+          body.setAttribute('data-theme', 'night'); // Explicitly set it, then cycle will toggle to day
+          startDayNightCycle();
+      }
+      else {
           activateVariant(initialVariant);
       }
     })();
