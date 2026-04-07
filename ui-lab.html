@@ -227,23 +227,113 @@
       background-position: 40px 80px, 200px 120px;
       animation: driftStarsReverse 72s linear infinite;
     }
+    body[data-theme="day"] .lab-aurora {
+      opacity: 0.8;
+      background:
+        radial-gradient(circle 320px at calc(var(--mx, 50) * 1px) calc(var(--my, 50) * 1px), rgba(255, 200, 100, 0.4), transparent 65%),
+        radial-gradient(circle 420px at calc(var(--mx, 50) * 1px - 12%) calc(var(--my, 50) * 1px + 8%), rgba(255, 220, 150, 0.3), transparent 68%);
+    }
+    body[data-theme="day"] .lab-stars {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(255, 255, 255, 0.3), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(255, 240, 200, 0.2), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(255, 230, 180, 0.2), transparent 24%),
+        #f0f0f0;
+    }
+    body[data-theme="day"] .lab-stars::before {
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.90) 0.85px, transparent 1.2px),
+        radial-gradient(circle, rgba(255,240,200,0.74) 0.78px, transparent 1.18px),
+        radial-gradient(circle, rgba(255,255,255,0.50) 0.66px, transparent 1.02px);
+    }
+    body[data-theme="day"] .lab-stars::after {
+      background-image:
+        radial-gradient(circle, rgba(255,200,100,0.48) 1px, transparent 1.45px),
+        radial-gradient(circle, rgba(255,255,255,0.22) 0.8px, transparent 1.2px);
+    }
+    body[data-theme="night"] .lab-aurora,
+    .lab-aurora {
+      opacity: 0.28;
+      background:
+        radial-gradient(circle 320px at calc(var(--mx, 50) * 1px) calc(var(--my, 50) * 1px), rgba(124,58,237,0.20), transparent 65%),
+        radial-gradient(circle 420px at calc(var(--mx, 50) * 1px - 12%) calc(var(--my, 50) * 1px + 8%), rgba(79,70,229,0.14), transparent 68%);
+    }
+    body[data-theme="night"] .lab-stars,
+    .lab-stars {
+      background:
+        radial-gradient(circle at 20% 20%, rgba(124,58,237,0.10), transparent 24%),
+        radial-gradient(circle at 80% 0%, rgba(79,70,229,0.08), transparent 28%),
+        radial-gradient(circle at 50% 100%, rgba(168,85,247,0.08), transparent 24%),
+        #0a0a0a;
+    }
+    body[data-theme="night"] .lab-stars::before,
+    .lab-stars::before {
+      opacity: 0.92;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.90) 0.85px, transparent 1.2px),
+        radial-gradient(circle, rgba(196,181,253,0.74) 0.78px, transparent 1.18px),
+        radial-gradient(circle, rgba(255,255,255,0.50) 0.66px, transparent 1.02px);
+    }
+    body[data-theme="night"] .lab-stars::after,
+    .lab-stars::after {
+      opacity: 0.42;
+      background-image:
+        radial-gradient(circle, rgba(124,58,237,0.48) 1px, transparent 1.45px),
+        radial-gradient(circle, rgba(255,255,255,0.22) 0.8px, transparent 1.2px);
+    }
+
+    body[data-theme="day"] .lab-panel {
+        background: rgba(255,255,255,0.88);
+        border: 1px solid #e0e0e0;
+        box-shadow: 0 24px 80px rgba(0,0,0,0.1);
+    }
+    body[data-theme="day"] .lab-panel__eyebrow,
+    body[data-theme="day"] .lab-panel__copy {
+        color: #666;
+    }
+    body[data-theme="day"] .lab-panel__title {
+        color: #333;
+    }
+    body[data-theme="day"] .lab-variant {
+        border: 1px solid #d0d0d0;
+        background: rgba(0,0,0,0.02);
+        color: #444;
+    }
+    body[data-theme="day"] .lab-variant:hover {
+        border-color: #a0a0a088;
+        background: rgba(0,0,0,0.04);
+    }
+    body[data-theme="day"] .lab-variant--active {
+        border-color: #888;
+        background: rgba(0,0,0,0.08);
+        box-shadow: 0 0 0 1px rgba(0,0,0,0.1) inset;
+    }
+    body[data-theme="day"] .lab-variant__name {
+        color: #222;
+    }
+    body[data-theme="day"] .lab-link {
+        color: #555;
+    }
+
     .lab-aurora,
     .lab-vignette,
     .lab-canvas {
       z-index: 1;
     }
     .lab-aurora {
-      opacity: 0.28;
-      background:
-        radial-gradient(circle 320px at calc(var(--mx, 50) * 1px) calc(var(--my, 50) * 1px), rgba(124,58,237,0.20), transparent 65%),
-        radial-gradient(circle 420px at calc(var(--mx, 50) * 1px - 12%) calc(var(--my, 50) * 1px + 8%), rgba(79,70,229,0.14), transparent 68%);
+      transition: opacity 0.5s ease, background 0.5s ease;
       filter: blur(36px);
-      transition: opacity 0.28s ease;
     }
     body[data-variant="constellation"] .lab-aurora { opacity: 0.12; }
     body[data-variant="aurora"] .lab-aurora { opacity: 0.48; }
     body[data-variant="magnetic"] .lab-aurora { opacity: 0.22; }
     body[data-variant="swarm"] .lab-aurora { opacity: 0.18; }
+    body[data-variant="vortex"] .lab-aurora { opacity: 0.35; }
+    body[data-variant="shockwave"] .lab-aurora { opacity: 0.4; }
+    body[data-variant="neuralweb"] .lab-aurora { opacity: 0.3; }
+    body[data-variant="day-night"] .lab-aurora { opacity: 0.35; }
+
+
     .lab-canvas {
       width: 100%;
       height: 100%;
@@ -328,6 +418,22 @@
         <button class="lab-variant" data-variant="swarm">
           <span class="lab-variant__name">Swarm Field</span>
           <span class="lab-variant__desc">Brighter agents lead and the rest route behind them in a coordinated stream.</span>
+        </button>
+        <button class="lab-variant" data-variant="vortex">
+          <span class="lab-variant__name">The Vortex</span>
+          <span class="lab-variant__desc">Cursor creates a powerful rotational current, sucking particles into an orbit.</span>
+        </button>
+        <button class="lab-variant" data-variant="shockwave">
+          <span class="lab-variant__name">Kinetic Shockwave</span>
+          <span class="lab-variant__desc">Rapid cursor movement emits visible ripples that violently push particles away.</span>
+        </button>
+        <button class="lab-variant" data-variant="neuralweb">
+          <span class="lab-variant__name">Neural Web</span>
+          <span class="lab-variant__desc">Electrified lines flash and snap between nodes at high speed, like data transmission.</span>
+        </button>
+        <button class="lab-variant" data-variant="day-night">
+          <span class="lab-variant__name">Day/Night Cycle</span>
+          <span class="lab-variant__desc">Automatic visual shift between sunrise/day and night themes every 10 seconds.</span>
         </button>
       </div>
       <div class="lab-links">
@@ -432,7 +538,12 @@
               baseSize: cfg.minSize + Math.random() * (cfg.maxSize - cfg.minSize),
               depth: 0.42 + Math.random() * 0.95,
               twinkle: Math.random() * Math.PI * 2,
-              leader: Math.random() < (cfg.leaderRate || 0) ? 1 : 0
+              leader: Math.random() < (cfg.leaderRate || 0) ? 1 : 0,
+              attract: cfg.attract || 0,
+              swirl: cfg.swirl || 0,
+              repel: cfg.repel || 0,
+              initialVx: (Math.random() - 0.5) * cfg.seedVelocity,
+              initialVy: (Math.random() - 0.5) * cfg.seedVelocity
             });
           }
         }
@@ -440,7 +551,7 @@
         function setPointer(x, y, active) {
           pointer.targetX = x;
           pointer.targetY = y;
-          if (!pointer.active) {
+          if (!pointer.active || (Math.abs(pointer.x - x) > 50 || Math.abs(pointer.y - y) > 50)) { // Snap if far away or inactive
             pointer.x = x;
             pointer.y = y;
           }
@@ -456,31 +567,63 @@
           p.twinkle += 0.009 * cfg.twinkleSpeed;
           p.vx *= cfg.friction;
           p.vy *= cfg.friction;
+
+          // Base drift force
           p.vx += (Math.sin((p.y + time * 0.018) * 0.01 * cfg.flowScale) * 0.0028 + (Math.random() - 0.5) * 0.0009) * cfg.driftForce;
           p.vy += (Math.cos((p.x - time * 0.014) * 0.01 * cfg.flowScale) * 0.0028 + (Math.random() - 0.5) * 0.0009) * cfg.driftForce;
+
+          // Leader bias
           if (p.leader) {
             p.vx += Math.sin(time * 0.0006 + p.twinkle) * 0.006 * cfg.leaderBias;
             p.vy += Math.cos(time * 0.0005 + p.twinkle) * 0.006 * cfg.leaderBias;
           }
+
           const dx = pointer.x - p.x;
           const dy = pointer.y - p.y;
           const dist = Math.hypot(dx, dy) || 0.001;
           const radius = cfg.radius * p.depth;
+
           if (pointer.active || cfg.alwaysInteractive) {
             if (dist < radius) {
-              const force = 1 - dist / radius;
-              const nx = dx / dist;
+              const force = 1 - dist / radius; // Force is stronger closer to pointer
+              const nx = dx / dist; // Normalized vector towards pointer
               const ny = dy / dist;
-              p.vx += nx * cfg.attract * force * p.depth;
-              p.vy += ny * cfg.attract * force * p.depth;
-              p.vx += -ny * cfg.swirl * force * p.depth;
-              p.vy += nx * cfg.swirl * force * p.depth;
-              p.vx -= nx * cfg.repel * force * p.depth;
-              p.vy -= ny * cfg.repel * force * p.depth;
+
+              if (cfg.attract) {
+                p.vx += nx * cfg.attract * force * p.depth;
+                p.vy += ny * cfg.attract * force * p.depth;
+              }
+              if (cfg.swirl) {
+                p.vx += -ny * cfg.swirl * force * p.depth;
+                p.vy += nx * cfg.swirl * force * p.depth;
+              }
+              if (cfg.repel) {
+                p.vx -= nx * cfg.repel * force * p.depth;
+                p.vy -= ny * cfg.repel * force * p.depth;
+              }
+              if (cfg.vortexStrength && cfg.vortexRadius) {
+                  const vortexForce = cfg.vortexStrength * force;
+                  const angle = Math.atan2(ny, nx);
+                  p.vx += vortexForce * -Math.sin(angle);
+                  p.vy += vortexForce * Math.cos(angle);
+              }
+              if (cfg.shockwaveStrength && cfg.shockwaveRadius && pointer.wasMoving) { // Only if pointer was moving
+                  const shockForce = cfg.shockwaveStrength * force * pointer.speed;
+                  p.vx -= nx * shockForce * p.depth;
+                  p.vy -= ny * shockForce * p.depth;
+              }
             }
           }
+          if (cfg.neuralWebAttract && dist < cfg.neuralWebRadius) {
+              const neuralForce = (1 - dist / cfg.neuralWebRadius) * cfg.neuralWebAttract;
+              p.vx += nx * neuralForce;
+              p.vy += ny * neuralForce;
+          }
+
+
           p.x += p.vx;
           p.y += p.vy;
+
           if (p.x < -30) p.x = width + 30;
           if (p.x > width + 30) p.x = -30;
           if (p.y < -30) p.y = height + 30;
@@ -491,6 +634,18 @@
           const cfg = variant();
           ctx.clearRect(0, 0, width, height);
           updatePointer();
+
+          // Calculate pointer speed for shockwave
+          const prevPointerX = pointer.x;
+          const prevPointerY = pointer.y;
+          pointer.x = pointer.targetX;
+          pointer.y = pointer.targetY;
+          const pointerMovedX = pointer.x - prevPointerX;
+          const pointerMovedY = pointer.y - prevPointerY;
+          pointer.speed = Math.hypot(pointerMovedX, pointerMovedY);
+          pointer.wasMoving = pointer.speed > 5; // Threshold for considering it "moving"
+
+
           particles.forEach(function (p) {
             stepParticle(p, cfg, time || 0);
           });
@@ -504,14 +659,26 @@
               const dy = a.y - b.y;
               const dist = Math.hypot(dx, dy);
               if (dist > cfg.lineDistance) continue;
+
+              let lineAlpha = (1 - dist / cfg.lineDistance) * cfg.lineOpacity * Math.min(a.depth, b.depth) * (a.leader || b.leader ? 1.2 : 1);
+              let lineWidth = cfg.lineWidth;
+
+              if (cfg.neuralWebSpeed && dist < cfg.neuralWebLineDistance) {
+                  lineAlpha *= (1 + cfg.neuralWebLineBoost * (1 - dist / cfg.neuralWebLineDistance));
+                  lineWidth *= (1 + cfg.neuralWebLineBoost * 0.5 * (1 - dist / cfg.neuralWebLineDistance));
+              }
+
               const bPointerDist = Math.hypot(pointer.x - b.x, pointer.y - b.y) || 0.001;
               const bPointerBoost = Math.max(0, 1 - bPointerDist / (cfg.pointerLineRadius || 220));
               const pointerBoost = 1 + Math.max(aPointerBoost, bPointerBoost) * (cfg.pointerLineBoost || 2.2);
-              const alpha = (1 - dist / cfg.lineDistance) * cfg.lineOpacity * Math.min(a.depth, b.depth) * (a.leader || b.leader ? 1.2 : 1) * pointerBoost;
-              if (alpha <= 0.01) continue;
+              lineAlpha *= pointerBoost;
+              lineWidth *= (1 + Math.max(aPointerBoost, bPointerBoost) * 1.6);
+
+
+              if (lineAlpha <= 0.01) continue;
               ctx.beginPath();
-              ctx.strokeStyle = 'rgba(' + cfg.lineColor.join(',') + ',' + Math.min(alpha, 0.92).toFixed(3) + ')';
-              ctx.lineWidth = cfg.lineWidth * (1 + Math.max(aPointerBoost, bPointerBoost) * 1.6);
+              ctx.strokeStyle = 'rgba(' + cfg.lineColor.join(',') + ',' + Math.min(lineAlpha, 0.92).toFixed(3) + ')';
+              ctx.lineWidth = lineWidth;
               ctx.moveTo(a.x, a.y);
               ctx.lineTo(b.x, b.y);
               ctx.stroke();
@@ -567,13 +734,14 @@
           pointerLineRadius: 180, pointerLineBoost: 1.1, pointerNodeRadius: 160, pointerNodeScale: 0.9, pointerAlphaBoost: 0.5
         },
         magnetic: {
-          count: 92, seedVelocity: 0.22, minSize: 0.72, maxSize: 2.3,
-          driftForce: 0.75, flowScale: 0.82, friction: 0.978, radius: 285,
-          attract: 0.070, swirl: 0.050, repel: 0,
-          lineDistance: 176, lineOpacity: 0.20, lineWidth: 1.2,
+          count: 110, seedVelocity: 0.45, minSize: 0.72, maxSize: 2.8,
+          driftForce: 1.2, flowScale: 1.1, friction: 0.975, radius: 320,
+          attract: 0.120, swirl: 0.080, repel: 0,
+          lineDistance: 190, lineOpacity: 0.28, lineWidth: 1.4,
           lineColor: [168, 85, 247], nodeColor: [255, 250, 255], glowColor: [196, 181, 253],
-          nodeOpacity: 0.94, twinkleSpeed: 0.95, leaderRate: 0.03, leaderBias: 0.3,
-          pointerLineRadius: 300, pointerLineBoost: 2.2, pointerNodeRadius: 260, pointerNodeScale: 2.3, pointerAlphaBoost: 1.2
+          nodeOpacity: 0.98, twinkleSpeed: 1.5, leaderRate: 0.05, leaderBias: 0.4,
+          pointerLineRadius: 340, pointerLineBoost: 3.8, pointerNodeRadius: 300, pointerNodeScale: 3.5, pointerAlphaBoost: 1.8,
+          alwaysInteractive: true
         },
         swarm: {
           count: 118, seedVelocity: 0.38, minSize: 0.6, maxSize: 1.85,
@@ -583,10 +751,68 @@
           lineColor: [56, 189, 248], nodeColor: [240, 249, 255], glowColor: [56, 189, 248],
           nodeOpacity: 0.86, twinkleSpeed: 1.12, leaderRate: 0.10, leaderBias: 1.15,
           pointerLineRadius: 170, pointerLineBoost: 1.0, pointerNodeRadius: 150, pointerNodeScale: 1.1, pointerAlphaBoost: 0.6
+        },
+        vortex: {
+            count: 100, seedVelocity: 0.5, minSize: 0.8, maxSize: 2.5,
+            driftForce: 0.8, flowScale: 1.5, friction: 0.96, radius: 180,
+            attract: 0.03, swirl: 0.08, repel: 0.01,
+            vortexStrength: 0.07, vortexRadius: 160,
+            lineDistance: 80, lineOpacity: 0.1, lineWidth: 0.8,
+            lineColor: [255, 100, 200], nodeColor: [255, 180, 220], glowColor: [255, 120, 200],
+            nodeOpacity: 0.9, twinkleSpeed: 1.3, leaderRate: 0.03, leaderBias: 0.8,
+            pointerLineRadius: 120, pointerLineBoost: 2.0, pointerNodeRadius: 100, pointerNodeScale: 2.5, pointerAlphaBoost: 1.5,
+            alwaysInteractive: true
+        },
+        shockwave: {
+            count: 80, seedVelocity: 0.2, minSize: 1.0, maxSize: 3.0,
+            driftForce: 0.5, flowScale: 0.5, friction: 0.9, radius: 250,
+            attract: 0, swirl: 0, repel: 0.05,
+            shockwaveStrength: 0.15, shockwaveRadius: 300,
+            lineDistance: 180, lineOpacity: 0.05, lineWidth: 1.0,
+            lineColor: [100, 200, 255], nodeColor: [180, 220, 255], glowColor: [150, 200, 255],
+            nodeOpacity: 0.95, twinkleSpeed: 0.8, leaderRate: 0, leaderBias: 0,
+            pointerLineRadius: 0, pointerLineBoost: 0, pointerNodeRadius: 0, pointerNodeScale: 0, pointerAlphaBoost: 0,
+            alwaysInteractive: true
+        },
+        neuralweb: {
+            count: 120, seedVelocity: 0.6, minSize: 0.5, maxSize: 1.5,
+            driftForce: 1.8, flowScale: 2.0, friction: 0.99, radius: 100,
+            attract: 0.02, swirl: 0.01, repel: 0.005,
+            neuralWebAttract: 0.08, neuralWebRadius: 150, neuralWebLineDistance: 120, neuralWebLineBoost: 2.5, neuralWebLineSpeed: 0.05,
+            lineDistance: 100, lineOpacity: 0.3, lineWidth: 1.2,
+            lineColor: [0, 255, 150], nodeColor: [100, 255, 180], glowColor: [50, 255, 100],
+            nodeOpacity: 0.88, twinkleSpeed: 2.0, leaderRate: 0.1, leaderBias: 0.5,
+            pointerLineRadius: 200, pointerLineBoost: 4.0, pointerNodeRadius: 180, pointerNodeScale: 3.0, pointerAlphaBoost: 2.0,
+            alwaysInteractive: true
+        },
+        day: { // Configuration for Day mode particles
+            count: 100, seedVelocity: 0.2, minSize: 0.8, maxSize: 2.5,
+            driftForce: 0.8, flowScale: 0.8, friction: 0.98, radius: 200,
+            attract: 0.03, swirl: 0.01, repel: 0.002,
+            lineDistance: 160, lineOpacity: 0.4, lineWidth: 1.2,
+            lineColor: [255, 200, 100], nodeColor: [255, 255, 220], glowColor: [255, 230, 180],
+            nodeOpacity: 0.95, twinkleSpeed: 0.8, leaderRate: 0.0, leaderBias: 0.0,
+            pointerLineRadius: 200, pointerLineBoost: 2.0, pointerNodeRadius: 180, pointerNodeScale: 2.0, pointerAlphaBoost: 1.0,
+            alwaysInteractive: false
+        },
+        night: { // Configuration for Night mode particles
+            count: 96, seedVelocity: 0.30, minSize: 0.68, maxSize: 2.0,
+            driftForce: 1.0, flowScale: 1.0, friction: 0.982, radius: 220,
+            attract: 0.050, swirl: 0.030, repel: 0.004,
+            lineDistance: 156, lineOpacity: 0.24, lineWidth: 1.05,
+            lineColor: [124, 58, 237], nodeColor: [245, 244, 255], glowColor: [167, 139, 250],
+            nodeOpacity: 0.92, twinkleSpeed: 1, leaderRate: 0.02, leaderBias: 0.2,
+            pointerLineRadius: 260, pointerLineBoost: 3.4, pointerNodeRadius: 220, pointerNodeScale: 2.8, pointerAlphaBoost: 1.4,
+            alwaysInteractive: true
         }
       };
 
+      let dayNightInterval = null;
+
       const field = createParticleField(canvas, function () {
+        if (currentVariant === 'day-night') {
+            return body.getAttribute('data-theme') === 'day' ? variants.day : variants.night;
+        }
         return variants[currentVariant];
       });
 
@@ -596,13 +822,41 @@
         field.setPointer(x, y, true);
       }
 
+      function startDayNightCycle() {
+        if (dayNightInterval) clearInterval(dayNightInterval);
+        let isDay = false;
+        const toggleDayNight = () => {
+            isDay = !isDay;
+            body.setAttribute('data-theme', isDay ? 'day' : 'night');
+            field.reseed();
+        };
+        dayNightInterval = setInterval(toggleDayNight, 10000); // Toggle every 10 seconds
+        toggleDayNight(); // Initial state
+      }
+
+      function stopDayNightCycle() {
+        if (dayNightInterval) {
+            clearInterval(dayNightInterval);
+            dayNightInterval = null;
+        }
+        body.removeAttribute('data-theme');
+      }
+
       function activateVariant(name) {
         currentVariant = name;
-        body.setAttribute('data-variant', name);
         buttons.forEach((button) => {
           button.classList.toggle('lab-variant--active', button.dataset.variant === name);
         });
-        field.reseed();
+
+        stopDayNightCycle(); // Stop any active cycle
+
+        if (name === 'day-night') {
+            startDayNightCycle();
+            body.setAttribute('data-variant', name); // Still set data-variant for general styling
+        } else {
+            body.setAttribute('data-variant', name);
+            field.reseed();
+        }
       }
 
       buttons.forEach((button) => {
@@ -631,7 +885,14 @@
       root.style.setProperty('--mx', String(window.innerWidth * 0.58));
       root.style.setProperty('--my', String(window.innerHeight * 0.42));
       field.setPointer(window.innerWidth * 0.58, window.innerHeight * 0.42, false);
-      activateVariant(currentVariant);
+      
+      // Initialize the active variant and potentially start day/night cycle
+      const initialVariant = body.getAttribute('data-variant');
+      if (initialVariant === 'day-night') {
+          startDayNightCycle();
+      } else {
+          activateVariant(initialVariant);
+      }
     })();
   </script>
 </body>
