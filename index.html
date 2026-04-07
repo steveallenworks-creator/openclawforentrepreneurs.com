@@ -34,19 +34,7 @@
   <!-- Favicon (inline SVG as data URI — no file dependency) -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%237c3aed'/><text y='24' x='4' font-size='22'>🤖</text></svg>" />
 </head>
-<body data-theme="night">
-
-<!-- Full-page immersive background (fixed, z-index 0, behind all content) -->
-<div class="page-bg" aria-hidden="true">
-  <div class="page-bg__night-base"></div>
-  <div class="page-bg__night-stars"></div>
-  <div class="page-bg__day-base"></div>
-  <div class="page-bg__day-dust"></div>
-  <div class="page-bg__aurora"></div>
-  <canvas id="page-canvas"></canvas>
-  <div class="cursor-halo" id="cursor-halo"></div>
-  <div class="page-bg__vignette"></div>
-</div>
+<body>
 
 <!-- ═══════════════════════════════════════════════════════════
      NAV
@@ -62,11 +50,6 @@
     <li><a href="#security">Security</a></li>
     <li><a href="#pricing">Pricing</a></li>
     <li><a href="#waitlist" class="btn btn--secondary btn--sm">Get Early Access</a></li>
-    <li>
-      <button class="theme-toggle" id="theme-toggle" aria-label="Toggle day/night mode" title="Toggle day/night">
-        <span class="theme-toggle__icon">🌙</span>
-      </button>
-    </li>
   </ul>
 </nav>
 
@@ -76,6 +59,7 @@
 ════════════════════════════════════════════════════════════ -->
 <section class="hero" id="hero">
   <div class="hero__bg" aria-hidden="true"></div>
+  <canvas class="hero__canvas" id="hero-particles" aria-hidden="true"></canvas>
   <div class="hero__content">
 
     <div class="hero__eyebrow">
@@ -618,264 +602,320 @@
 
 
 <!-- ═══════════════════════════════════════════════════════════
-     JAVASCRIPT — full-page particles · day/night · FAQ · form
+     JAVASCRIPT — hero particle field + FAQ accordion + waitlist form handler
 ════════════════════════════════════════════════════════════ -->
 <script>
 (function () {
   'use strict';
 
-  /* ── THEME SYSTEM ──────────────────────────────────────────── */
-  var body       = document.body;
-  var toggleBtn  = document.getElementById('theme-toggle');
-  var toggleIcon = toggleBtn && toggleBtn.querySelector('.theme-toggle__icon');
-  var auroraEl   = document.querySelector('.page-bg__aurora');
-  var haloEl     = document.getElementById('cursor-halo');
+  function createParticleField(canvas, options) {
+    if (!canvas || !canvas.getContext) return null;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return null;
+    const particles = [];
+    const pointer = { x: 0, y: 0, targetX: 0, targetY: 0, active: false };
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    let width = 0;
+    let height = 0;
+    let rafId = null;
 
-  var currentTheme = 'night';
-  var themeBlend   = 0;   /* 0 = night, 1 = day */
-  var themeTarget  = 0;
-  var BLEND_SPEED  = 1 / 200; /* ~3.3s at 60fps */
-
-  function applyTheme(theme) {
-    currentTheme = theme;
-    body.setAttribute('data-theme', theme);
-    sessionStorage.setItem('oc_theme', theme);
-    themeTarget = theme === 'day' ? 1 : 0;
-    if (toggleIcon) toggleIcon.textContent = theme === 'day' ? '\u2600\ufe0f' : '\uD83C\uDF19';
-  }
-
-  (function initTheme() {
-    var saved    = sessionStorage.getItem('oc_theme');
-    var returned = !!sessionStorage.getItem('oc_visited');
-    sessionStorage.setItem('oc_visited', '1');
-    applyTheme('night');
-    if (returned) {
-      setTimeout(function () { applyTheme('day'); }, saved === 'night' ? 8000 : 5000);
-    } else {
-      setTimeout(function () { applyTheme('day'); }, 3 * 60 * 1000);
+    function variantSettings() {
+      return typeof options.getVariant === 'function' ? options.getVariant() : (options.variant || {});
     }
-  }());
 
-  if (toggleBtn) {
-    toggleBtn.addEventListener('click', function () {
-      applyTheme(currentTheme === 'night' ? 'day' : 'night');
-    });
-  }
+    function resize() {
+      const rect = canvas.getBoundingClientRect();
+      width = Math.max(1, rect.width || canvas.clientWidth || window.innerWidth);
+      height = Math.max(1, rect.height || canvas.clientHeight || window.innerHeight);
+      canvas.width = Math.round(width * dpr);
+      canvas.height = Math.round(height * dpr);
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      if (!particles.length) seed();
+    }
 
-  /* ── FULL-PAGE PARTICLE FIELD ──────────────────────────────── */
-  var canvas = document.getElementById('page-canvas');
-  if (!canvas || !canvas.getContext) return;
-  var ctx = canvas.getContext('2d');
-  if (!ctx) return;
+    function seed() {
+      particles.length = 0;
+      const cfg = variantSettings();
+      const count = cfg.count || 90;
+      for (let i = 0; i < count; i += 1) {
+        particles.push({
+          x: Math.random() * width,
+          y: Math.random() * height,
+          vx: (Math.random() - 0.5) * (cfg.drift || 0.18),
+          vy: (Math.random() - 0.5) * (cfg.drift || 0.18),
+          baseSize: (cfg.minSize || 0.7) + Math.random() * ((cfg.maxSize || 2.2) - (cfg.minSize || 0.7)),
+          depth: 0.45 + Math.random() * 0.9,
+          twinkle: Math.random() * Math.PI * 2
+        });
+      }
+    }
 
-  var DPR = Math.min(window.devicePixelRatio || 1, 2);
-  var particles = [];
-  var ptr = { x: 0, y: 0, tx: 0, ty: 0, on: false };
-  var W = 0, H = 0;
+    function setPointer(x, y, active) {
+      pointer.targetX = x;
+      pointer.targetY = y;
+      if (!pointer.active) {
+        pointer.x = x;
+        pointer.y = y;
+      }
+      pointer.active = active;
+    }
 
-  /* Night config — 2x faster than the original hero field */
-  var NIGHT = {
-    count: 108, drift: 0.44, driftForce: 2.0, flowScale: 1.0, friction: 0.985,
-    radius: 220, attract: 0.036, swirl: 0.026, repel: 0,
-    lineDistance: 154, lineOpacity: 0.28,
-    lineColor: [124,58,237], nodeColor: [245,244,255], glowColor: [167,139,250],
-    nodeOpacity: 0.92, minSize: 0.72, maxSize: 2.05, twinkleSpeed: 1.0
-  };
+    function updatePointer() {
+      pointer.x += (pointer.targetX - pointer.x) * 0.12;
+      pointer.y += (pointer.targetY - pointer.y) * 0.12;
+    }
 
-  /* Day config — warm golden particles */
-  var DAY = {
-    count: 108, drift: 0.36, driftForce: 1.6, flowScale: 0.85, friction: 0.987,
-    radius: 230, attract: 0.030, swirl: 0.020, repel: 0,
-    lineDistance: 162, lineOpacity: 0.30,
-    lineColor: [217,119,6], nodeColor: [255,245,200], glowColor: [251,191,36],
-    nodeOpacity: 0.88, minSize: 0.72, maxSize: 2.05, twinkleSpeed: 0.8
-  };
+    function stepParticle(p, cfg, time) {
+      p.twinkle += 0.01 * (cfg.twinkleSpeed || 1);
+      p.vx *= cfg.friction || 0.985;
+      p.vy *= cfg.friction || 0.985;
+      p.vx += (Math.sin((p.y + time * 0.02) * 0.01 * (cfg.flowScale || 1)) * 0.0025 + (Math.random() - 0.5) * 0.0008) * (cfg.driftForce || 1);
+      p.vy += (Math.cos((p.x - time * 0.015) * 0.01 * (cfg.flowScale || 1)) * 0.0025 + (Math.random() - 0.5) * 0.0008) * (cfg.driftForce || 1);
 
-  function lerp(a,b,t) { return a+(b-a)*t; }
-  function lerpRGB(a,b,t) {
-    return [Math.round(lerp(a[0],b[0],t)),Math.round(lerp(a[1],b[1],t)),Math.round(lerp(a[2],b[2],t))];
-  }
+      if (pointer.active || cfg.alwaysInteractive) {
+        const dx = pointer.x - p.x;
+        const dy = pointer.y - p.y;
+        const dist = Math.hypot(dx, dy) || 0.001;
+        const radius = (cfg.radius || 170) * p.depth;
+        if (dist < radius) {
+          const force = 1 - dist / radius;
+          const nx = dx / dist;
+          const ny = dy / dist;
+          const attract = (cfg.attract || 0.018) * force * p.depth;
+          const swirl = (cfg.swirl || 0) * force * p.depth;
+          const repel = (cfg.repel || 0) * force * p.depth;
+          p.vx += nx * attract - ny * swirl - nx * repel;
+          p.vy += ny * attract + nx * swirl - ny * repel;
+        }
+      }
 
-  function getCfg() {
-    var t = themeBlend;
-    if (t <= 0) return NIGHT;
-    if (t >= 1) return DAY;
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < -20) p.x = width + 20;
+      if (p.x > width + 20) p.x = -20;
+      if (p.y < -20) p.y = height + 20;
+      if (p.y > height + 20) p.y = -20;
+    }
+
+    function drawConnections(cfg) {
+      const lineDistance = cfg.lineDistance || 150;
+      for (let i = 0; i < particles.length; i += 1) {
+        const a = particles[i];
+        for (let j = i + 1; j < particles.length; j += 1) {
+          const b = particles[j];
+          const dx = a.x - b.x;
+          const dy = a.y - b.y;
+          const dist = Math.hypot(dx, dy);
+          if (dist > lineDistance) continue;
+          const alpha = (1 - dist / lineDistance) * (cfg.lineOpacity || 0.22) * Math.min(a.depth, b.depth);
+          if (alpha <= 0.01) continue;
+          ctx.beginPath();
+          ctx.strokeStyle = 'rgba(' + cfg.lineColor.join(',') + ',' + alpha.toFixed(3) + ')';
+          ctx.lineWidth = cfg.lineWidth || 1;
+          ctx.moveTo(a.x, a.y);
+          ctx.lineTo(b.x, b.y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    function drawParticles(cfg, time) {
+      const nodeColor = cfg.nodeColor || [255, 255, 255];
+      const glowColor = cfg.glowColor || nodeColor;
+      particles.forEach(function (p) {
+        const pulse = 0.65 + 0.35 * Math.sin(p.twinkle + time * 0.0012);
+        const size = p.baseSize * p.depth * (cfg.sizeBoost || 1);
+        const alpha = (cfg.nodeOpacity || 0.8) * pulse;
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(' + glowColor.join(',') + ',' + (alpha * 0.12).toFixed(3) + ')';
+        ctx.arc(p.x, p.y, size * 4.2, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.beginPath();
+        ctx.fillStyle = 'rgba(' + nodeColor.join(',') + ',' + alpha.toFixed(3) + ')';
+        ctx.arc(p.x, p.y, Math.max(0.45, size), 0, Math.PI * 2);
+        ctx.fill();
+      });
+    }
+
+    function frame(time) {
+      const cfg = variantSettings();
+      updatePointer();
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach(function (p) { stepParticle(p, cfg, time || 0); });
+      drawConnections(cfg);
+      drawParticles(cfg, time || 0);
+      rafId = requestAnimationFrame(frame);
+    }
+
+    resize();
+    rafId = requestAnimationFrame(frame);
+
     return {
-      drift:        lerp(NIGHT.drift,       DAY.drift,       t),
-      driftForce:   lerp(NIGHT.driftForce,  DAY.driftForce,  t),
-      flowScale:    lerp(NIGHT.flowScale,    DAY.flowScale,   t),
-      friction:     lerp(NIGHT.friction,     DAY.friction,    t),
-      radius:       lerp(NIGHT.radius,       DAY.radius,      t),
-      attract:      lerp(NIGHT.attract,      DAY.attract,     t),
-      swirl:        lerp(NIGHT.swirl,        DAY.swirl,       t),
-      repel: 0,
-      lineDistance: lerp(NIGHT.lineDistance, DAY.lineDistance, t),
-      lineOpacity:  lerp(NIGHT.lineOpacity,  DAY.lineOpacity,  t),
-      lineColor:    lerpRGB(NIGHT.lineColor,  DAY.lineColor,   t),
-      nodeColor:    lerpRGB(NIGHT.nodeColor,  DAY.nodeColor,   t),
-      glowColor:    lerpRGB(NIGHT.glowColor,  DAY.glowColor,   t),
-      nodeOpacity:  lerp(NIGHT.nodeOpacity,  DAY.nodeOpacity,  t),
-      twinkleSpeed: lerp(NIGHT.twinkleSpeed, DAY.twinkleSpeed, t)
+      resize: resize,
+      setPointer: setPointer,
+      destroy: function () { if (rafId) cancelAnimationFrame(rafId); }
     };
   }
 
-  function resize() {
-    W = window.innerWidth; H = window.innerHeight;
-    canvas.width  = Math.round(W * DPR);
-    canvas.height = Math.round(H * DPR);
-    ctx.setTransform(DPR, 0, 0, DPR, 0, 0);
-    if (!particles.length) seed();
-  }
+  const canvas = document.getElementById('hero-particles');
+  const hero = document.getElementById('hero');
+  let heroField = null;
 
-  function seed() {
-    particles.length = 0;
-    for (var i = 0; i < NIGHT.count; i++) {
-      particles.push({
-        x: Math.random()*W, y: Math.random()*H,
-        vx: (Math.random()-0.5)*NIGHT.drift,
-        vy: (Math.random()-0.5)*NIGHT.drift,
-        base: NIGHT.minSize + Math.random()*(NIGHT.maxSize-NIGHT.minSize),
-        depth: 0.45 + Math.random()*0.9,
-        twinkle: Math.random()*Math.PI*2
-      });
-    }
-  }
-
-  function stepParticle(p, c, t) {
-    p.twinkle += 0.01 * c.twinkleSpeed;
-    p.vx *= c.friction; p.vy *= c.friction;
-    p.vx += (Math.sin((p.y+t*0.02)*0.01*c.flowScale)*0.0025+(Math.random()-0.5)*0.0008)*c.driftForce;
-    p.vy += (Math.cos((p.x-t*0.015)*0.01*c.flowScale)*0.0025+(Math.random()-0.5)*0.0008)*c.driftForce;
-    if (ptr.on) {
-      var dx=ptr.x-p.x, dy=ptr.y-p.y, dist=Math.hypot(dx,dy)||0.001, r=c.radius*p.depth;
-      if (dist < r) {
-        var f=(1-dist/r)*p.depth, nx=dx/dist, ny=dy/dist;
-        p.vx += nx*c.attract*f - ny*c.swirl*f;
-        p.vy += ny*c.attract*f + nx*c.swirl*f;
+  if (canvas && hero) {
+    heroField = createParticleField(canvas, {
+      variant: {
+        count: 108,
+        drift: 0.22,
+        driftForce: 1,
+        flowScale: 1,
+        friction: 0.985,
+        radius: 200,
+        attract: 0.018,
+        swirl: 0.013,
+        repel: 0,
+        lineDistance: 154,
+        lineOpacity: 0.28,
+        lineColor: [124, 58, 237],
+        nodeColor: [245, 244, 255],
+        glowColor: [167, 139, 250],
+        nodeOpacity: 0.92,
+        minSize: 0.72,
+        maxSize: 2.05,
+        sizeBoost: 1,
+        twinkleSpeed: 1
       }
+    });
+
+    function localPoint(clientX, clientY) {
+      const rect = hero.getBoundingClientRect();
+      return { x: clientX - rect.left, y: clientY - rect.top };
     }
-    p.x += p.vx; p.y += p.vy;
-    if (p.x < -20) p.x = W+20; if (p.x > W+20) p.x = -20;
-    if (p.y < -20) p.y = H+20; if (p.y > H+20) p.y = -20;
+
+    hero.addEventListener('mousemove', function (event) {
+      const point = localPoint(event.clientX, event.clientY);
+      heroField.setPointer(point.x, point.y, true);
+    }, { passive: true });
+
+    hero.addEventListener('mouseleave', function () {
+      heroField.setPointer(hero.clientWidth * 0.5, hero.clientHeight * 0.45, false);
+    });
+
+    hero.addEventListener('touchmove', function (event) {
+      if (!event.touches || !event.touches[0]) return;
+      const point = localPoint(event.touches[0].clientX, event.touches[0].clientY);
+      heroField.setPointer(point.x, point.y, true);
+    }, { passive: true });
+
+    window.addEventListener('resize', heroField.resize);
+    heroField.setPointer(hero.clientWidth * 0.58, hero.clientHeight * 0.42, false);
   }
 
-  function updateGlowLayers() {
-    var t=themeBlend, ac=lerpRGB([124,58,237],[251,191,36],t), bc=lerpRGB([79,70,229],[249,115,22],t);
-    var ao=lerp(0.22,0.42,t).toFixed(3), bo=lerp(0.15,0.28,t).toFixed(3);
-    var px=ptr.x, py=ptr.y;
-    if (auroraEl) {
-      auroraEl.style.background =
-        'radial-gradient(circle 340px at '+px+'px '+py+'px,rgba('+ac[0]+','+ac[1]+','+ac[2]+','+ao+'),transparent 65%),' +
-        'radial-gradient(circle 440px at '+(px-80)+'px '+(py+60)+'px,rgba('+bc[0]+','+bc[1]+','+bc[2]+','+bo+'),transparent 68%)';
-    }
-    if (haloEl) {
-      var ha=(0.18*t).toFixed(3);
-      haloEl.style.background='radial-gradient(circle 300px at '+px+'px '+py+'px,rgba(251,191,36,'+ha+'),transparent 70%)';
-    }
-  }
+  const faqItems = document.querySelectorAll('.faq__item');
 
-  function frame(t) {
-    if (themeBlend < themeTarget) themeBlend = Math.min(themeTarget, themeBlend+BLEND_SPEED);
-    else if (themeBlend > themeTarget) themeBlend = Math.max(themeTarget, themeBlend-BLEND_SPEED);
-    ptr.x += (ptr.tx-ptr.x)*0.12; ptr.y += (ptr.ty-ptr.y)*0.12;
-    var c = getCfg();
-    ctx.clearRect(0, 0, W, H);
-    for (var i=0; i<particles.length; i++) stepParticle(particles[i], c, t||0);
-    var lc=c.lineColor;
-    for (var i=0; i<particles.length; i++) {
-      var a=particles[i];
-      for (var j=i+1; j<particles.length; j++) {
-        var b=particles[j], dx=a.x-b.x, dy=a.y-b.y, d=Math.hypot(dx,dy);
-        if (d > c.lineDistance) continue;
-        var alpha=(1-d/c.lineDistance)*c.lineOpacity*Math.min(a.depth,b.depth);
-        if (alpha < 0.01) continue;
-        ctx.beginPath();
-        ctx.strokeStyle='rgba('+lc[0]+','+lc[1]+','+lc[2]+','+alpha.toFixed(3)+')';
-        ctx.lineWidth=1; ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y); ctx.stroke();
-      }
-    }
-    var nc=c.nodeColor, gc=c.glowColor;
-    for (var i=0; i<particles.length; i++) {
-      var p=particles[i];
-      var pulse=0.65+0.35*Math.sin(p.twinkle+(t||0)*0.0012);
-      var sz=p.base*p.depth, al=c.nodeOpacity*pulse;
-      ctx.beginPath();
-      ctx.fillStyle='rgba('+gc[0]+','+gc[1]+','+gc[2]+','+(al*0.12).toFixed(3)+')';
-      ctx.arc(p.x,p.y,sz*4.2,0,Math.PI*2); ctx.fill();
-      ctx.beginPath();
-      ctx.fillStyle='rgba('+nc[0]+','+nc[1]+','+nc[2]+','+al.toFixed(3)+')';
-      ctx.arc(p.x,p.y,Math.max(0.45,sz),0,Math.PI*2); ctx.fill();
-    }
-    updateGlowLayers();
-    requestAnimationFrame(frame);
-  }
+  faqItems.forEach(function (item) {
+    const btn = item.querySelector('.faq__question');
+    btn.addEventListener('click', function () {
+      const isOpen = item.classList.contains('faq__item--open');
 
-  resize();
-  ptr.x=W*0.58; ptr.y=H*0.42; ptr.tx=ptr.x; ptr.ty=ptr.y;
-  window.addEventListener('resize', resize, {passive:true});
-  requestAnimationFrame(frame);
-
-  window.addEventListener('mousemove', function(e) { ptr.tx=e.clientX; ptr.ty=e.clientY; ptr.on=true; }, {passive:true});
-  window.addEventListener('touchmove', function(e) {
-    if (e.touches&&e.touches[0]) { ptr.tx=e.touches[0].clientX; ptr.ty=e.touches[0].clientY; ptr.on=true; }
-  }, {passive:true});
-  window.addEventListener('mouseleave', function() { ptr.on=false; });
-
-  /* ── FAQ ACCORDION ─────────────────────────────────────────── */
-  document.querySelectorAll('.faq__item').forEach(function(item) {
-    var btn = item.querySelector('.faq__question');
-    btn.addEventListener('click', function() {
-      var open = item.classList.contains('faq__item--open');
-      document.querySelectorAll('.faq__item').forEach(function(i) {
+      faqItems.forEach(function (i) {
         i.classList.remove('faq__item--open');
         i.querySelector('.faq__question').setAttribute('aria-expanded', 'false');
       });
-      if (!open) { item.classList.add('faq__item--open'); btn.setAttribute('aria-expanded', 'true'); }
+
+      if (!isOpen) {
+        item.classList.add('faq__item--open');
+        btn.setAttribute('aria-expanded', 'true');
+      }
     });
   });
 
-  /* ── WAITLIST FORM ─────────────────────────────────────────── */
-  var form    = document.getElementById('waitlist-form');
-  var success = document.getElementById('waitlist-success');
+  const form    = document.getElementById('waitlist-form');
+  const success = document.getElementById('waitlist-success');
+
   if (form) {
-    form.addEventListener('submit', async function(e) {
+    form.addEventListener('submit', async function (e) {
       e.preventDefault();
-      var data=new FormData(form), endpoint=form.getAttribute('action');
+
+      const data     = new FormData(form);
+      const endpoint = form.getAttribute('action');
+
       if (endpoint.includes('YOUR_FORMSPREE_ID')) {
+        const email = data.get('email');
         try {
-          var list=JSON.parse(localStorage.getItem('oc_waitlist')||'[]');
-          list.push({email:data.get('email'),ts:new Date().toISOString()});
-          localStorage.setItem('oc_waitlist',JSON.stringify(list));
-        } catch(_) {}
-        form.style.display='none'; success.style.display='block'; return;
+          const list = JSON.parse(localStorage.getItem('oc_waitlist') || '[]');
+          list.push({ email: email, ts: new Date().toISOString() });
+          localStorage.setItem('oc_waitlist', JSON.stringify(list));
+        } catch (err) { }
+        form.style.display = 'none';
+        success.style.display = 'block';
+        return;
       }
-      var btn=form.querySelector('.waitlist__btn'); btn.textContent='Joining\u2026'; btn.disabled=true;
+
+      const btn = form.querySelector('.waitlist__btn');
+      btn.textContent = 'Joining…';
+      btn.disabled    = true;
+
       try {
-        var res=await fetch(endpoint,{method:'POST',body:data,headers:{Accept:'application/json'}});
-        if (res.ok) { form.style.display='none'; success.style.display='block'; }
-        else { btn.textContent='Try Again'; btn.disabled=false; }
-      } catch(_) { btn.textContent='Try Again'; btn.disabled=false; }
+        const res = await fetch(endpoint, {
+          method:  'POST',
+          body:    data,
+          headers: { Accept: 'application/json' }
+        });
+
+        if (res.ok) {
+          form.style.display    = 'none';
+          success.style.display = 'block';
+        } else {
+          btn.textContent = 'Try Again';
+          btn.disabled    = false;
+        }
+      } catch (err) {
+        btn.textContent = 'Try Again';
+        btn.disabled    = false;
+      }
     });
   }
 
-  /* ── SMOOTH SCROLL + ACTIVE NAV ────────────────────────────── */
-  document.querySelectorAll('a[href^="#"]').forEach(function(a) {
-    a.addEventListener('click', function(e) {
-      var target=document.querySelector(this.getAttribute('href'));
-      if (target) { e.preventDefault(); target.scrollIntoView({behavior:'smooth',block:'start'}); }
+  document.querySelectorAll('a[href^="#"]').forEach(function (anchor) {
+    anchor.addEventListener('click', function (e) {
+      const target = document.querySelector(this.getAttribute('href'));
+      if (target) {
+        e.preventDefault();
+        target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     });
   });
-  var sections=document.querySelectorAll('section[id]');
-  var navLinks=document.querySelectorAll('.nav__links a[href^="#"]');
-  var nav=document.querySelector('.nav');
-  window.addEventListener('scroll', function() {
-    nav.style.boxShadow = window.scrollY>32 ? '0 1px 0 0 #1e1e1e, 0 8px 32px rgba(0,0,0,0.5)' : 'none';
-    var current='';
-    sections.forEach(function(s) { if (window.scrollY>=s.offsetTop-120) current=s.getAttribute('id'); });
-    navLinks.forEach(function(link) { link.style.color=link.getAttribute('href')=='#'+current ? '#f0f0f0' : ''; });
-  }, {passive:true});
 
-}());
+  const sections  = document.querySelectorAll('section[id]');
+  const navLinks  = document.querySelectorAll('.nav__links a[href^="#"]');
+  const nav       = document.querySelector('.nav');
+
+  function onScroll() {
+    if (window.scrollY > 32) {
+      nav.style.boxShadow = '0 1px 0 0 #1e1e1e, 0 8px 32px rgba(0,0,0,0.5)';
+    } else {
+      nav.style.boxShadow = 'none';
+    }
+
+    let current = '';
+    sections.forEach(function (section) {
+      if (window.scrollY >= section.offsetTop - 120) {
+        current = section.getAttribute('id');
+      }
+    });
+
+    navLinks.forEach(function (link) {
+      link.style.color = '';
+      if (link.getAttribute('href') === '#' + current) {
+        link.style.color = '#f0f0f0';
+      }
+    });
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+})();
 </script>
 
 </body>
+</html>
