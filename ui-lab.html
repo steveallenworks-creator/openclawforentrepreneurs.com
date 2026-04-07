@@ -400,6 +400,16 @@
       <div class="lab-panel__eyebrow">UI Lab</div>
       <div class="lab-panel__title">Same layout, different motion systems.</div>
       <div class="lab-panel__copy">I cloned the current hero and added a few mouse-reactive variants so you can compare feel without changing the copy, CTA, or overall structure.</div>
+      <!-- Auto-cycle controls -->
+      <div class="lab-cycle-controls">
+        <button class="lab-cycle-btn" id="lab-prev" aria-label="Previous variant">&#9664;</button>
+        <div class="lab-cycle-info">
+          <span id="lab-cycle-label">Manual</span>
+          <button class="lab-autocycle-btn" id="lab-autocycle">Auto-cycle: OFF</button>
+        </div>
+        <button class="lab-cycle-btn" id="lab-next" aria-label="Next variant">&#9654;</button>
+      </div>
+
       <div class="lab-variants">
         <button class="lab-variant lab-variant--active" data-variant="constellation">
           <span class="lab-variant__name">Constellation</span>
@@ -429,13 +439,33 @@
           <span class="lab-variant__name">Neural Web</span>
           <span class="lab-variant__desc">Electrified lines flash and snap between nodes at high speed, like data transmission.</span>
         </button>
+        <button class="lab-variant" data-variant="hyperspeed">
+          <span class="lab-variant__name">Hyperspeed &#9889;</span>
+          <span class="lab-variant__desc">4&#215; speed, violent attraction forces. The page feels electric and alive.</span>
+        </button>
+        <button class="lab-variant" data-variant="cosmiccalm">
+          <span class="lab-variant__name">Cosmic Calm &#127754;</span>
+          <span class="lab-variant__desc">Ultra-slow drift, barely perceptible motion. Meditative and serene.</span>
+        </button>
+        <button class="lab-variant" data-variant="chaos">
+          <span class="lab-variant__name">Chaos Storm &#127754;</span>
+          <span class="lab-variant__desc">High velocity, turbulent flow, repel and attract simultaneously.</span>
+        </button>
+        <button class="lab-variant" data-variant="day-full">
+          <span class="lab-variant__name">&#9728;&#65039; Full Day Mode</span>
+          <span class="lab-variant__desc">The complete warm sunrise look &#8212; how the entire page feels in day mode.</span>
+        </button>
+        <button class="lab-variant" data-variant="night-full">
+          <span class="lab-variant__name">&#127769; Full Night Mode</span>
+          <span class="lab-variant__desc">Pure deep space night &#8212; stars, aurora, purple constellation at full effect.</span>
+        </button>
         <button class="lab-variant" data-variant="day-night">
-          <span class="lab-variant__name">Day/Night Cycle</span>
-          <span class="lab-variant__desc">Automatic visual shift between sunrise/day and night themes every 10 seconds.</span>
+          <span class="lab-variant__name">&#127749;&#65039; Sunrise Transition</span>
+          <span class="lab-variant__desc">Auto-plays the slow night&#8594;day sunrise. Watch the colors and particles transform.</span>
         </button>
       </div>
       <div class="lab-links">
-        <a class="lab-link" href="index.html">Back to production page</a>
+        <a class="lab-link" href="index.html">&#8592; Back to production page</a>
       </div>
     </aside>
 
@@ -488,6 +518,54 @@
         </div>
       </div>
     </section>
+
+    <!-- Full-page content preview — shows how background + particles affect the whole scrollable page -->
+    <div class="lab-page-content">
+      <div class="lab-divider"></div>
+      <section class="lab-section lab-section--surface">
+        <div class="lab-content-preview">
+          <span style="display:inline-block;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#9d5cf6;margin-bottom:14px;transition:color 3.5s ease" id="lab-eyebrow-features">What It Does</span>
+          <h2 class="lab-preview-heading">Not a chatbot. Not a copilot.<br>A complete system that acts.</h2>
+          <p class="lab-preview-sub">This section shows how the space background bleeds through the entire page &#8212; not just the hero. Every section is immersive. Scroll down to see the particles react to your cursor throughout.</p>
+          <div class="lab-mini-cards">
+            <div class="lab-mini-card"><div class="lab-mini-card__icon">&#127749;</div><div class="lab-mini-card__title">Morning Briefings</div><p class="lab-mini-card__desc">Wake up to a full report of everything that happened overnight.</p></div>
+            <div class="lab-mini-card"><div class="lab-mini-card__icon">&#128225;</div><div class="lab-mini-card__title">Autonomous Outreach</div><p class="lab-mini-card__desc">1,000 agents qualifying leads and booking calls around the clock.</p></div>
+            <div class="lab-mini-card"><div class="lab-mini-card__icon">&#127916;</div><div class="lab-mini-card__title">Content Empire</div><p class="lab-mini-card__desc">Videos, posts, and clips generated and published across 36 channels.</p></div>
+            <div class="lab-mini-card"><div class="lab-mini-card__icon">&#128202;</div><div class="lab-mini-card__title">Automated Fundraising</div><p class="lab-mini-card__desc">Investor ranking and personalized outreach, automated relationship warming.</p></div>
+          </div>
+        </div>
+      </section>
+      <div class="lab-divider"></div>
+      <section class="lab-section">
+        <div class="lab-content-preview">
+          <span style="display:block;font-size:0.72rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:#9d5cf6;margin-bottom:14px;text-align:center;transition:color 3.5s ease" id="lab-eyebrow-how">How It Works</span>
+          <h2 class="lab-preview-heading" style="text-align:center">Three steps. Then your business runs itself.</h2>
+          <p class="lab-preview-sub" style="text-align:center">Notice how particles react to your cursor even here, deep in the page &#8212; the physics field covers the entire viewport as you scroll.</p>
+          <div class="lab-mini-cards">
+            <div class="lab-mini-card" style="text-align:center">
+              <div id="step1" style="width:60px;height:60px;border-radius:50%;background:rgba(124,58,237,0.12);border:2px solid #7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;color:#9d5cf6;margin:0 auto 14px;transition:all 3.5s ease">1</div>
+              <div class="lab-mini-card__title">Download the app</div><p class="lab-mini-card__desc">No terminal workflow, no bash commands, no setup maze.</p>
+            </div>
+            <div class="lab-mini-card" style="text-align:center">
+              <div id="step2" style="width:60px;height:60px;border-radius:50%;background:rgba(124,58,237,0.12);border:2px solid #7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;color:#9d5cf6;margin:0 auto 14px;transition:all 3.5s ease">2</div>
+              <div class="lab-mini-card__title">Install it anywhere</div><p class="lab-mini-card__desc">Laptop, Mac Mini, or VPS. Platform agnostic from day one.</p>
+            </div>
+            <div class="lab-mini-card" style="text-align:center">
+              <div id="step3" style="width:60px;height:60px;border-radius:50%;background:rgba(124,58,237,0.12);border:2px solid #7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.2rem;font-weight:800;color:#9d5cf6;margin:0 auto 14px;transition:all 3.5s ease">3</div>
+              <div class="lab-mini-card__title">Watch it run</div><p class="lab-mini-card__desc">VP &#8594; Director &#8594; Worker hierarchy executes your strategy, 24/7.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <div class="lab-divider"></div>
+      <section class="lab-section lab-section--surface" style="text-align:center">
+        <div class="lab-content-preview" style="text-align:center">
+          <p class="lab-preview-sub" style="margin-bottom:24px">Use &#9664; &#9654; buttons in the panel to cycle variants, or enable auto-cycle to watch them rotate.</p>
+          <a href="index.html" id="lab-back-link" style="display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:0.95rem;color:#9d5cf6;border:1px solid #7c3aed44;padding:12px 28px;border-radius:8px;text-decoration:none;transition:all 3.5s ease">&#8592; See the production page</a>
+        </div>
+      </section>
+    </div>
+
   </div>
 
   <script>
@@ -709,197 +787,283 @@
         };
       }
 
+      /* ── VARIANT CONFIGS ──────────────────────────────────── */
       const variants = {
         constellation: {
-          count: 96, seedVelocity: 0.30, minSize: 0.68, maxSize: 2.0,
-          driftForce: 1.0, flowScale: 1.0, friction: 0.982, radius: 220,
-          attract: 0.050, swirl: 0.030, repel: 0.004,
-          lineDistance: 156, lineOpacity: 0.24, lineWidth: 1.05,
-          lineColor: [124, 58, 237], nodeColor: [245, 244, 255], glowColor: [167, 139, 250],
-          nodeOpacity: 0.92, twinkleSpeed: 1, leaderRate: 0.02, leaderBias: 0.2,
-          pointerLineRadius: 260, pointerLineBoost: 3.4, pointerNodeRadius: 220, pointerNodeScale: 2.8, pointerAlphaBoost: 1.4,
-          alwaysInteractive: false
+          count:96, seedVelocity:0.30, minSize:0.68, maxSize:2.0,
+          driftForce:1.0, flowScale:1.0, friction:0.982, radius:220,
+          attract:0.050, swirl:0.030, repel:0.004,
+          lineDistance:156, lineOpacity:0.24, lineWidth:1.05,
+          lineColor:[124,58,237], nodeColor:[245,244,255], glowColor:[167,139,250],
+          nodeOpacity:0.92, twinkleSpeed:1, leaderRate:0.02, leaderBias:0.2,
+          pointerLineRadius:260, pointerLineBoost:3.4, pointerNodeRadius:220, pointerNodeScale:2.8, pointerAlphaBoost:1.4,
+          alwaysInteractive:false
         },
         aurora: {
-          count: 132, seedVelocity: 0.46, minSize: 0.58, maxSize: 1.72,
-          driftForce: 1.9, flowScale: 1.85, friction: 0.988, radius: 250,
-          attract: 0.014, swirl: 0.040, repel: 0,
-          lineDistance: 124, lineOpacity: 0.09, lineWidth: 0.9,
-          lineColor: [99, 102, 241], nodeColor: [219, 234, 254], glowColor: [129, 140, 248],
-          nodeOpacity: 0.76, twinkleSpeed: 1.25, leaderRate: 0.05, leaderBias: 0.65,
-          pointerLineRadius: 180, pointerLineBoost: 1.1, pointerNodeRadius: 160, pointerNodeScale: 0.9, pointerAlphaBoost: 0.5,
-          alwaysInteractive: false
+          count:132, seedVelocity:0.46, minSize:0.58, maxSize:1.72,
+          driftForce:1.9, flowScale:1.85, friction:0.988, radius:250,
+          attract:0.014, swirl:0.040, repel:0,
+          lineDistance:124, lineOpacity:0.09, lineWidth:0.9,
+          lineColor:[99,102,241], nodeColor:[219,234,254], glowColor:[129,140,248],
+          nodeOpacity:0.76, twinkleSpeed:1.25, leaderRate:0.05, leaderBias:0.65,
+          pointerLineRadius:180, pointerLineBoost:1.1, pointerNodeRadius:160, pointerNodeScale:0.9, pointerAlphaBoost:0.5,
+          alwaysInteractive:false
         },
         magnetic: {
-          count: 110, seedVelocity: 0.45, minSize: 0.72, maxSize: 2.8,
-          driftForce: 1.2, flowScale: 1.1, friction: 0.975, radius: 320,
-          attract: 0.120, swirl: 0.080, repel: 0,
-          lineDistance: 190, lineOpacity: 0.28, lineWidth: 1.4,
-          lineColor: [168, 85, 247], nodeColor: [255, 250, 255], glowColor: [196, 181, 253],
-          nodeOpacity: 0.98, twinkleSpeed: 1.5, leaderRate: 0.05, leaderBias: 0.4,
-          pointerLineRadius: 340, pointerLineBoost: 3.8, pointerNodeRadius: 300, pointerNodeScale: 3.5, pointerAlphaBoost: 1.8,
-          alwaysInteractive: true
+          count:110, seedVelocity:0.45, minSize:0.72, maxSize:2.8,
+          driftForce:1.2, flowScale:1.1, friction:0.975, radius:320,
+          attract:0.120, swirl:0.080, repel:0,
+          lineDistance:190, lineOpacity:0.28, lineWidth:1.4,
+          lineColor:[168,85,247], nodeColor:[255,250,255], glowColor:[196,181,253],
+          nodeOpacity:0.98, twinkleSpeed:1.5, leaderRate:0.05, leaderBias:0.4,
+          pointerLineRadius:340, pointerLineBoost:3.8, pointerNodeRadius:300, pointerNodeScale:3.5, pointerAlphaBoost:1.8,
+          alwaysInteractive:true
         },
         swarm: {
-          count: 118, seedVelocity: 0.38, minSize: 0.6, maxSize: 1.85,
-          driftForce: 1.45, flowScale: 1.35, friction: 0.986, radius: 230,
-          attract: 0.020, swirl: 0.026, repel: 0.018,
-          lineDistance: 116, lineOpacity: 0.15, lineWidth: 0.9,
-          lineColor: [56, 189, 248], nodeColor: [240, 249, 255], glowColor: [56, 189, 248],
-          nodeOpacity: 0.86, twinkleSpeed: 1.12, leaderRate: 0.10, leaderBias: 1.15,
-          pointerLineRadius: 170, pointerLineBoost: 1.0, pointerNodeRadius: 150, pointerNodeScale: 1.1, pointerAlphaBoost: 0.6,
-          alwaysInteractive: true
+          count:118, seedVelocity:0.38, minSize:0.6, maxSize:1.85,
+          driftForce:1.45, flowScale:1.35, friction:0.986, radius:230,
+          attract:0.020, swirl:0.026, repel:0.018,
+          lineDistance:116, lineOpacity:0.15, lineWidth:0.9,
+          lineColor:[56,189,248], nodeColor:[240,249,255], glowColor:[56,189,248],
+          nodeOpacity:0.86, twinkleSpeed:1.12, leaderRate:0.10, leaderBias:1.15,
+          pointerLineRadius:170, pointerLineBoost:1.0, pointerNodeRadius:150, pointerNodeScale:1.1, pointerAlphaBoost:0.6,
+          alwaysInteractive:true
         },
         vortex: {
-            count: 100, seedVelocity: 0.5, minSize: 0.8, maxSize: 2.5,
-            driftForce: 0.8, flowScale: 1.5, friction: 0.96, radius: 180,
-            attract: 0.03, swirl: 0.08, repel: 0.01,
-            vortexStrength: 0.07, vortexRadius: 160,
-            lineDistance: 80, lineOpacity: 0.1, lineWidth: 0.8,
-            lineColor: [255, 100, 200], nodeColor: [255, 180, 220], glowColor: [255, 120, 200],
-            nodeOpacity: 0.9, twinkleSpeed: 1.3, leaderRate: 0.03, leaderBias: 0.8,
-            pointerLineRadius: 120, pointerLineBoost: 2.0, pointerNodeRadius: 100, pointerNodeScale: 2.5, pointerAlphaBoost: 1.5,
-            alwaysInteractive: true
+          count:100, seedVelocity:0.5, minSize:0.8, maxSize:2.5,
+          driftForce:0.8, flowScale:1.5, friction:0.96, radius:180,
+          attract:0.03, swirl:0.08, repel:0.01, vortexStrength:0.07, vortexRadius:160,
+          lineDistance:80, lineOpacity:0.1, lineWidth:0.8,
+          lineColor:[255,100,200], nodeColor:[255,180,220], glowColor:[255,120,200],
+          nodeOpacity:0.9, twinkleSpeed:1.3, leaderRate:0.03, leaderBias:0.8,
+          pointerLineRadius:120, pointerLineBoost:2.0, pointerNodeRadius:100, pointerNodeScale:2.5, pointerAlphaBoost:1.5,
+          alwaysInteractive:true
         },
         shockwave: {
-            count: 80, seedVelocity: 0.2, minSize: 1.0, maxSize: 3.0,
-            driftForce: 0.5, flowScale: 0.5, friction: 0.9, radius: 250,
-            attract: 0, swirl: 0, repel: 0.05,
-            shockwaveStrength: 0.15, shockwaveRadius: 300,
-            lineDistance: 180, lineOpacity: 0.05, lineWidth: 1.0,
-            lineColor: [100, 200, 255], nodeColor: [180, 220, 255], glowColor: [150, 200, 255],
-            nodeOpacity: 0.95, twinkleSpeed: 0.8, leaderRate: 0, leaderBias: 0,
-            pointerLineRadius: 0, pointerLineBoost: 0, pointerNodeRadius: 0, pointerNodeScale: 0, pointerAlphaBoost: 0,
-            alwaysInteractive: true
+          count:80, seedVelocity:0.2, minSize:1.0, maxSize:3.0,
+          driftForce:0.5, flowScale:0.5, friction:0.9, radius:250,
+          attract:0, swirl:0, repel:0.05, shockwaveStrength:0.15, shockwaveRadius:300,
+          lineDistance:180, lineOpacity:0.05, lineWidth:1.0,
+          lineColor:[100,200,255], nodeColor:[180,220,255], glowColor:[150,200,255],
+          nodeOpacity:0.95, twinkleSpeed:0.8, leaderRate:0, leaderBias:0,
+          pointerLineRadius:0, pointerLineBoost:0, pointerNodeRadius:0, pointerNodeScale:0, pointerAlphaBoost:0,
+          alwaysInteractive:true
         },
         neuralweb: {
-            count: 120, seedVelocity: 0.6, minSize: 0.5, maxSize: 1.5,
-            driftForce: 1.8, flowScale: 2.0, friction: 0.99, radius: 100,
-            attract: 0.02, swirl: 0.01, repel: 0.005,
-            neuralWebAttract: 0.08, neuralWebRadius: 150, neuralWebLineDistance: 120, neuralWebLineBoost: 2.5, neuralWebLineSpeed: 0.05,
-            lineDistance: 100, lineOpacity: 0.3, lineWidth: 1.2,
-            lineColor: [0, 255, 150], nodeColor: [100, 255, 180], glowColor: [50, 255, 100],
-            nodeOpacity: 0.88, twinkleSpeed: 2.0, leaderRate: 0.1, leaderBias: 0.5,
-            pointerLineRadius: 200, pointerLineBoost: 4.0, pointerNodeRadius: 180, pointerNodeScale: 3.0, pointerAlphaBoost: 2.0,
-            alwaysInteractive: true
+          count:120, seedVelocity:0.6, minSize:0.5, maxSize:1.5,
+          driftForce:1.8, flowScale:2.0, friction:0.99, radius:100,
+          attract:0.02, swirl:0.01, repel:0.005,
+          neuralWebAttract:0.08, neuralWebRadius:150, neuralWebLineDistance:120, neuralWebLineBoost:2.5, neuralWebLineSpeed:0.05,
+          lineDistance:100, lineOpacity:0.3, lineWidth:1.2,
+          lineColor:[0,255,150], nodeColor:[100,255,180], glowColor:[50,255,100],
+          nodeOpacity:0.88, twinkleSpeed:2.0, leaderRate:0.1, leaderBias:0.5,
+          pointerLineRadius:200, pointerLineBoost:4.0, pointerNodeRadius:180, pointerNodeScale:3.0, pointerAlphaBoost:2.0,
+          alwaysInteractive:true
         },
-        day: { // Configuration for Day mode particles - used by day-night variant
-            count: 100, seedVelocity: 0.2, minSize: 0.8, maxSize: 2.5,
-            driftForce: 0.8, flowScale: 0.8, friction: 0.98, radius: 200,
-            attract: 0.03, swirl: 0.01, repel: 0.002,
-            lineDistance: 160, lineOpacity: 0.4, lineWidth: 1.2,
-            lineColor: [255, 200, 100], nodeColor: [255, 255, 220], glowColor: [255, 230, 180],
-            nodeOpacity: 0.95, twinkleSpeed: 0.8, leaderRate: 0.0, leaderBias: 0.0,
-            pointerLineRadius: 200, pointerLineBoost: 2.0, pointerNodeRadius: 180, pointerNodeScale: 2.0, pointerAlphaBoost: 1.0,
-            alwaysInteractive: false
+        hyperspeed: {
+          count:140, seedVelocity:1.8, minSize:0.6, maxSize:2.2,
+          driftForce:4.0, flowScale:2.5, friction:0.970, radius:260,
+          attract:0.18, swirl:0.12, repel:0.06,
+          lineDistance:140, lineOpacity:0.35, lineWidth:1.2,
+          lineColor:[124,58,237], nodeColor:[220,210,255], glowColor:[167,139,250],
+          nodeOpacity:0.95, twinkleSpeed:2.5, leaderRate:0.08, leaderBias:1.5,
+          pointerLineRadius:300, pointerLineBoost:5.0, pointerNodeRadius:260, pointerNodeScale:4.0, pointerAlphaBoost:2.2,
+          alwaysInteractive:true
         },
-        night: { // Configuration for Night mode particles - used by day-night variant
-            count: 96, seedVelocity: 0.30, minSize: 0.68, maxSize: 2.0,
-            driftForce: 1.0, flowScale: 1.0, friction: 0.982, radius: 220,
-            attract: 0.050, swirl: 0.030, repel: 0.004,
-            lineDistance: 156, lineOpacity: 0.24, lineWidth: 1.05,
-            lineColor: [124, 58, 237], nodeColor: [245, 244, 255], glowColor: [167, 139, 250],
-            nodeOpacity: 0.92, twinkleSpeed: 1, leaderRate: 0.02, leaderBias: 0.2,
-            pointerLineRadius: 260, pointerLineBoost: 3.4, pointerNodeRadius: 220, pointerNodeScale: 2.8, pointerAlphaBoost: 1.4,
-            alwaysInteractive: true
+        cosmiccalm: {
+          count:72, seedVelocity:0.04, minSize:0.8, maxSize:2.8,
+          driftForce:0.25, flowScale:0.4, friction:0.998, radius:180,
+          attract:0.006, swirl:0.004, repel:0,
+          lineDistance:180, lineOpacity:0.14, lineWidth:0.8,
+          lineColor:[139,92,246], nodeColor:[245,243,255], glowColor:[167,139,250],
+          nodeOpacity:0.72, twinkleSpeed:0.3, leaderRate:0, leaderBias:0,
+          pointerLineRadius:200, pointerLineBoost:2.0, pointerNodeRadius:180, pointerNodeScale:1.5, pointerAlphaBoost:0.8,
+          alwaysInteractive:false
+        },
+        chaos: {
+          count:160, seedVelocity:1.2, minSize:0.5, maxSize:2.0,
+          driftForce:3.5, flowScale:3.0, friction:0.965, radius:200,
+          attract:0.08, swirl:0.15, repel:0.09, shockwaveStrength:0.08, shockwaveRadius:220, vortexStrength:0.04, vortexRadius:150,
+          lineDistance:100, lineOpacity:0.18, lineWidth:1.0,
+          lineColor:[239,68,68], nodeColor:[255,200,200], glowColor:[248,113,113],
+          nodeOpacity:0.90, twinkleSpeed:3.0, leaderRate:0.12, leaderBias:2.0,
+          pointerLineRadius:250, pointerLineBoost:4.5, pointerNodeRadius:220, pointerNodeScale:3.5, pointerAlphaBoost:2.0,
+          alwaysInteractive:true
+        },
+        'day-full': {
+          count:108, seedVelocity:0.36, minSize:0.72, maxSize:2.05,
+          driftForce:1.6, flowScale:0.85, friction:0.987, radius:230,
+          attract:0.030, swirl:0.020, repel:0,
+          lineDistance:162, lineOpacity:0.30, lineWidth:1.05,
+          lineColor:[217,119,6], nodeColor:[255,245,200], glowColor:[251,191,36],
+          nodeOpacity:0.88, twinkleSpeed:0.8, leaderRate:0.02, leaderBias:0.2,
+          pointerLineRadius:260, pointerLineBoost:3.0, pointerNodeRadius:220, pointerNodeScale:2.5, pointerAlphaBoost:1.2,
+          alwaysInteractive:false
+        },
+        'night-full': {
+          count:108, seedVelocity:0.44, minSize:0.68, maxSize:2.0,
+          driftForce:2.0, flowScale:1.0, friction:0.984, radius:230,
+          attract:0.060, swirl:0.038, repel:0.005,
+          lineDistance:162, lineOpacity:0.30, lineWidth:1.1,
+          lineColor:[124,58,237], nodeColor:[245,244,255], glowColor:[167,139,250],
+          nodeOpacity:0.96, twinkleSpeed:1.1, leaderRate:0.03, leaderBias:0.25,
+          pointerLineRadius:280, pointerLineBoost:4.0, pointerNodeRadius:240, pointerNodeScale:3.2, pointerAlphaBoost:1.6,
+          alwaysInteractive:false
+        },
+        _day: {
+          count:108, seedVelocity:0.36, minSize:0.72, maxSize:2.05,
+          driftForce:1.6, flowScale:0.85, friction:0.987, radius:230,
+          attract:0.030, swirl:0.020, repel:0,
+          lineDistance:162, lineOpacity:0.30, lineWidth:1.05,
+          lineColor:[217,119,6], nodeColor:[255,245,200], glowColor:[251,191,36],
+          nodeOpacity:0.88, twinkleSpeed:0.8, leaderRate:0, leaderBias:0,
+          pointerLineRadius:200, pointerLineBoost:2.0, pointerNodeRadius:180, pointerNodeScale:2.0, pointerAlphaBoost:1.0,
+          alwaysInteractive:false
+        },
+        _night: {
+          count:108, seedVelocity:0.44, minSize:0.68, maxSize:2.0,
+          driftForce:2.0, flowScale:1.0, friction:0.984, radius:230,
+          attract:0.060, swirl:0.038, repel:0.005,
+          lineDistance:162, lineOpacity:0.30, lineWidth:1.1,
+          lineColor:[124,58,237], nodeColor:[245,244,255], glowColor:[167,139,250],
+          nodeOpacity:0.96, twinkleSpeed:1.1, leaderRate:0.02, leaderBias:0.2,
+          pointerLineRadius:260, pointerLineBoost:3.4, pointerNodeRadius:220, pointerNodeScale:2.8, pointerAlphaBoost:1.4,
+          alwaysInteractive:true
         }
       };
 
-      let dayNightInterval = null;
+      const VARIANT_ORDER = ['constellation','aurora','magnetic','swarm','vortex','shockwave','neuralweb','hyperspeed','cosmiccalm','chaos','day-full','night-full','day-night'];
 
-      const field = createParticleField(canvas, function () {
-        if (currentVariant === 'day-night') {
-            return body.getAttribute('data-theme') === 'day' ? variants.day : variants.night;
-        }
-        return variants[currentVariant];
+      let dayNightInterval = null;
+      let themeBlend = 0, themeTarget = 0;
+      const BLEND_SPEED = 1 / 180;
+
+      function lerp(a,b,t) { return a+(b-a)*t; }
+      function lerpRGB(a,b,t) { return [Math.round(lerp(a[0],b[0],t)),Math.round(lerp(a[1],b[1],t)),Math.round(lerp(a[2],b[2],t))]; }
+
+      const field = createParticleField(canvas, function() {
+        if (currentVariant === 'day-full')  return variants['day-full'];
+        if (currentVariant === 'night-full') return variants['night-full'];
+        if (currentVariant === 'day-night') return body.getAttribute('data-theme') === 'day' ? variants._day : variants._night;
+        return variants[currentVariant] || variants.constellation;
       });
 
-      function setMouse(x, y) {
-        root.style.setProperty('--mx', String(x));
-        root.style.setProperty('--my', String(y));
-        field.setPointer(x, y, true);
-      }
+      const auroraEl   = document.querySelector('.page-bg__aurora');
+      const cursorHalo = document.getElementById('cursor-halo');
 
-      function startDayNightCycle() {
-        if (dayNightInterval) clearInterval(dayNightInterval);
-        let isDay = body.getAttribute('data-theme') === 'day'; // Get initial theme from body
-        const toggleDayNight = () => {
-            isDay = !isDay;
-            body.setAttribute('data-theme', isDay ? 'day' : 'night');
-            field.reseed();
-        };
-        dayNightInterval = setInterval(toggleDayNight, 10000); // Toggle every 10 seconds
-        toggleDayNight(); // Initial state
-      }
-
-      function stopDayNightCycle() {
-        if (dayNightInterval) {
-            clearInterval(dayNightInterval);
-            dayNightInterval = null;
+      function updateGlowLayers(px, py) {
+        if (!auroraEl) return;
+        const t=themeBlend, ac=lerpRGB([124,58,237],[251,191,36],t), bc=lerpRGB([79,70,229],[249,115,22],t);
+        const ao=lerp(0.28,0.70,t).toFixed(3), bo=lerp(0.18,0.40,t).toFixed(3);
+        auroraEl.style.background =
+          'radial-gradient(circle 340px at '+px+'px '+py+'px,rgba('+ac[0]+','+ac[1]+','+ac[2]+','+ao+'),transparent 65%),' +
+          'radial-gradient(circle 440px at '+(px-80)+'px '+(py+60)+'px,rgba('+bc[0]+','+bc[1]+','+bc[2]+','+bo+'),transparent 68%)';
+        if (cursorHalo) {
+          const ha=(0.18*t).toFixed(3);
+          cursorHalo.style.background='radial-gradient(circle 300px at '+px+'px '+py+'px,rgba(251,191,36,'+ha+'),transparent 70%)';
         }
-        // When stopping, revert to default night theme (or whatever the body's default data-theme is)
-        body.setAttribute('data-theme', 'night');
       }
+
+      function applyLabTheme(theme) {
+        body.setAttribute('data-theme', theme);
+        themeTarget = theme === 'day' ? 1 : 0;
+        ['step1','step2','step3'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (!el) return;
+          el.style.background = theme==='day' ? 'rgba(217,119,6,0.12)' : 'rgba(124,58,237,0.12)';
+          el.style.borderColor = theme==='day' ? '#d97706' : '#7c3aed';
+          el.style.color = theme==='day' ? '#b45309' : '#9d5cf6';
+        });
+        ['lab-eyebrow-features','lab-eyebrow-how'].forEach(function(id) {
+          const el = document.getElementById(id);
+          if (el) el.style.color = theme==='day' ? '#b45309' : '#9d5cf6';
+        });
+        const bl = document.getElementById('lab-back-link');
+        if (bl) { bl.style.color=theme==='day'?'#b45309':'#9d5cf6'; bl.style.borderColor=theme==='day'?'rgba(217,119,6,0.4)':'#7c3aed44'; }
+      }
+
+      function startSunriseCycle() {
+        if (dayNightInterval) clearInterval(dayNightInterval);
+        let isDay = false;
+        applyLabTheme('night');
+        dayNightInterval = setInterval(function() {
+          isDay = !isDay;
+          applyLabTheme(isDay ? 'day' : 'night');
+          field.reseed();
+        }, 10000);
+      }
+
+      function stopCycle() {
+        if (dayNightInterval) { clearInterval(dayNightInterval); dayNightInterval = null; }
+      }
+
+      /* Auto-cycle */
+      let autoCycleInterval = null;
+      let autoCycleOn = false;
+      const autoCycleBtn = document.getElementById('lab-autocycle');
+      const cycleLabel   = document.getElementById('lab-cycle-label');
+
+      function toggleAutoCycle() {
+        autoCycleOn = !autoCycleOn;
+        if (autoCycleBtn) { autoCycleBtn.textContent='Auto-cycle: '+(autoCycleOn?'ON':'OFF'); autoCycleBtn.classList.toggle('active',autoCycleOn); }
+        if (cycleLabel) cycleLabel.textContent = autoCycleOn ? 'Auto' : 'Manual';
+        if (autoCycleOn) {
+          autoCycleInterval = setInterval(function() {
+            const idx=(VARIANT_ORDER.indexOf(currentVariant)+1)%VARIANT_ORDER.length;
+            activateVariant(VARIANT_ORDER[idx]);
+          }, 10000);
+        } else {
+          if (autoCycleInterval) { clearInterval(autoCycleInterval); autoCycleInterval=null; }
+        }
+      }
+
+      if (autoCycleBtn) autoCycleBtn.addEventListener('click', toggleAutoCycle);
+      const prevBtn = document.getElementById('lab-prev');
+      const nextBtn = document.getElementById('lab-next');
+      if (prevBtn) prevBtn.addEventListener('click', function() { const idx=VARIANT_ORDER.indexOf(currentVariant); activateVariant(VARIANT_ORDER[(idx-1+VARIANT_ORDER.length)%VARIANT_ORDER.length]); });
+      if (nextBtn) nextBtn.addEventListener('click', function() { const idx=VARIANT_ORDER.indexOf(currentVariant); activateVariant(VARIANT_ORDER[(idx+1)%VARIANT_ORDER.length]); });
 
       function activateVariant(name) {
         currentVariant = name;
-        buttons.forEach((button) => {
-          button.classList.toggle('lab-variant--active', button.dataset.variant === name);
-        });
-
-        stopDayNightCycle(); // Stop any active cycle
-
+        buttons.forEach((button) => { button.classList.toggle('lab-variant--active', button.dataset.variant===name); });
+        const activeBtn = document.querySelector('.lab-variant--active');
+        if (activeBtn) activeBtn.scrollIntoView({block:'nearest', behavior:'smooth'});
+        stopCycle();
         if (name === 'day-night') {
-            body.setAttribute('data-variant', name); // Still set data-variant for general styling
-            // Initial state for day-night cycle is 'night' as per body data-theme default
-            startDayNightCycle();
+          body.setAttribute('data-variant', name);
+          applyLabTheme('night');
+          startSunriseCycle();
+        } else if (name === 'day-full') {
+          body.setAttribute('data-variant', name);
+          applyLabTheme('day');
+          field.reseed();
         } else {
-            body.setAttribute('data-variant', name);
-            body.setAttribute('data-theme', 'night'); // Ensure other variants revert to night theme
-            field.reseed();
+          body.setAttribute('data-variant', name);
+          applyLabTheme('night');
+          field.reseed();
         }
+        if (cycleLabel && !autoCycleOn) cycleLabel.textContent = name;
       }
 
-      buttons.forEach((button) => {
-        button.addEventListener('click', function () {
-          activateVariant(button.dataset.variant);
-        });
-      });
+      buttons.forEach((button) => { button.addEventListener('click', function() { activateVariant(button.dataset.variant); }); });
 
-      function localPoint(clientX, clientY) {
-        const rect = labShell.getBoundingClientRect();
-        return { x: clientX - rect.left, y: clientY - rect.top };
+      function setMouse(x, y) {
+        if (themeBlend < themeTarget) themeBlend = Math.min(themeTarget, themeBlend+BLEND_SPEED*3);
+        else if (themeBlend > themeTarget) themeBlend = Math.max(themeTarget, themeBlend-BLEND_SPEED*3);
+        field.setPointer(x, y, true);
+        updateGlowLayers(x, y);
       }
 
-      window.addEventListener('mousemove', function (event) {
-        const point = localPoint(event.clientX, event.clientY);
-        setMouse(point.x, point.y);
-      }, { passive: true });
-
-      window.addEventListener('touchmove', function (event) {
+      window.addEventListener('mousemove', function(event) { setMouse(event.clientX, event.clientY); }, {passive:true});
+      window.addEventListener('touchmove', function(event) {
         if (!event.touches || !event.touches[0]) return;
-        const point = localPoint(event.touches[0].clientX, event.touches[0].clientY);
-        setMouse(point.x, point.y);
-      }, { passive: true });
-
+        setMouse(event.touches[0].clientX, event.touches[0].clientY);
+      }, {passive:true});
       window.addEventListener('resize', field.resize);
-      root.style.setProperty('--mx', String(window.innerWidth * 0.58));
-      root.style.setProperty('--my', String(window.innerHeight * 0.42));
-      field.setPointer(window.innerWidth * 0.58, window.innerHeight * 0.42, false);
-      
-      // Initialize the active variant and potentially start day/night cycle
-      const initialVariant = body.getAttribute('data-variant');
-      const initialTheme = body.getAttribute('data-theme');
-      if (initialVariant === 'day-night' && initialTheme === 'day') { // If it starts in day-night mode and is already day
-          body.setAttribute('data-theme', 'day'); // Explicitly set it, then cycle will toggle to night
-          startDayNightCycle();
-      } else if (initialVariant === 'day-night' && initialTheme === 'night') { // If it starts in day-night mode and is already night
-          body.setAttribute('data-theme', 'night'); // Explicitly set it, then cycle will toggle to day
-          startDayNightCycle();
-      }
-      else {
-          activateVariant(initialVariant);
-      }
+      field.setPointer(window.innerWidth*0.58, window.innerHeight*0.42, false);
+      updateGlowLayers(window.innerWidth*0.58, window.innerHeight*0.42);
+
+      activateVariant(body.getAttribute('data-variant') || 'constellation');
     })();
   </script>
 </body>
