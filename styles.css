@@ -224,7 +224,7 @@ code, pre {
   align-items: flex-start;
   justify-content: center;
   text-align: center;
-  padding: 100px 24px 80px;
+  padding: 80px 24px 80px;
   overflow: hidden;
 }
 
@@ -908,7 +908,7 @@ code, pre {
 @media (max-width: 640px) {
   .nav__links { display: none; }
 
-  .hero { padding: 90px 20px 60px; }
+  .hero { padding: 70px 20px 60px; }
 
   .steps {
     grid-template-columns: 1fr;
