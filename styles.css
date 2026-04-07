@@ -221,10 +221,10 @@ code, pre {
   position: relative;
   min-height: 100vh;
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
   text-align: center;
-  padding: 100px 24px 80px;
+  padding: 180px 24px 80px;
   overflow: hidden;
 }
 
