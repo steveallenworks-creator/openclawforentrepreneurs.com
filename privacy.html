@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Privacy Policy — OpenClaw for Entrepreneurs</title>
+  <meta name="description" content="Privacy Policy for OpenClaw for Entrepreneurs and the Career-Ops desktop app." />
+  <meta name="robots" content="index, follow" />
+  <link rel="canonical" href="https://openclawforentrepreneurs.com/privacy" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' rx='6' fill='%237c3aed'/><text y='24' x='4' font-size='22'>🤖</text></svg>" />
+  <style>
+    .privacy-wrap {
+      max-width: 760px;
+      margin: 0 auto;
+      padding: 120px 24px 80px;
+      color: var(--text, #f1f0ff);
+    }
+    .privacy-wrap h1 {
+      font-size: 2.25rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #a78bfa, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .privacy-wrap .updated {
+      font-size: 0.85rem;
+      color: var(--muted, #9ca3af);
+      margin-bottom: 2.5rem;
+    }
+    .privacy-wrap h2 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      margin: 2.25rem 0 0.75rem;
+      color: #a78bfa;
+    }
+    .privacy-wrap p, .privacy-wrap li {
+      font-size: 0.95rem;
+      line-height: 1.75;
+      color: var(--muted, #c4c2d4);
+    }
+    .privacy-wrap ul {
+      padding-left: 1.5rem;
+      margin: 0.5rem 0;
+    }
+    .privacy-wrap li { margin-bottom: 0.4rem; }
+    .privacy-wrap a { color: #a78bfa; text-decoration: underline; }
+    .privacy-wrap .callout {
+      background: rgba(124, 58, 237, 0.08);
+      border: 1px solid rgba(124, 58, 237, 0.25);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      margin: 1.5rem 0;
+      font-size: 0.9rem;
+      color: var(--muted, #c4c2d4);
+    }
+    .back-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.4rem;
+      font-size: 0.875rem;
+      color: #a78bfa;
+      text-decoration: none;
+      margin-bottom: 2rem;
+    }
+    .back-link:hover { text-decoration: underline; }
+  </style>
+</head>
+<body data-theme="night">
+
+<div class="page-bg" aria-hidden="true">
+  <div class="page-bg__night-base"></div>
+  <div class="page-bg__night-stars"></div>
+  <div class="page-bg__aurora"></div>
+</div>
+
+<nav class="nav" style="position:fixed;top:0;left:0;right:0;z-index:100;padding:0 24px;height:64px;display:flex;align-items:center;background:rgba(10,8,24,0.85);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,0.06);">
+  <a href="/" style="font-size:1rem;font-weight:700;color:#a78bfa;text-decoration:none;">OpenClaw for Entrepreneurs</a>
+</nav>
+
+<main class="privacy-wrap">
+  <a href="/" class="back-link">← Back to home</a>
+  <h1>Privacy Policy</h1>
+  <p class="updated">Last updated: May 1, 2026</p>
+
+  <div class="callout">
+    <strong>Short version:</strong> OpenClaw for Entrepreneurs and the Career-Ops desktop app run locally on your computer. Your data stays on your machine. We don't sell it, we don't store it on our servers, and we don't share it with third parties except the AI services you explicitly connect.
+  </div>
+
+  <h2>1. Who We Are</h2>
+  <p>OpenClaw for Entrepreneurs is operated by The Fitly App, Inc. ("we," "us," or "our"). The Career-Ops desktop application is a product of OpenClaw for Entrepreneurs. You can reach us at <a href="mailto:Marcus@thefitlyapp.com">Marcus@thefitlyapp.com</a>.</p>
+
+  <h2>2. What Data We Collect</h2>
+  <p>The Career-Ops desktop app is a <strong>local-first application</strong> — it runs entirely on your computer. We collect:</p>
+  <ul>
+    <li><strong>Nothing by default.</strong> No analytics, no telemetry, no crash reports are sent to our servers without your explicit action.</li>
+    <li><strong>Information you enter directly</strong> — your resume, career history, job applications, and preferences — stored in your local workspace folder (<code>~/Career-Ops-Workspace/</code>).</li>
+    <li><strong>OAuth profile data</strong> — if you connect LinkedIn or Gmail, basic profile information (name, email address, profile photo) is saved locally to your workspace config. It is never uploaded to our servers.</li>
+    <li><strong>API keys</strong> — stored in a local <code>.env</code> file inside your workspace. Never transmitted to us.</li>
+  </ul>
+
+  <h2>3. Third-Party Services You May Connect</h2>
+  <p>The app integrates with services <em>you choose to connect</em>. When you connect them, your prompts and data are sent directly from your computer to those services under their own privacy policies:</p>
+  <ul>
+    <li><strong>Anthropic (Claude)</strong> — AI assistant. <a href="https://www.anthropic.com/privacy" target="_blank" rel="noopener">Anthropic Privacy Policy</a></li>
+    <li><strong>Google (Gmail &amp; Calendar)</strong> — email and calendar access. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a></li>
+    <li><strong>LinkedIn</strong> — profile import via Sign In with LinkedIn. <a href="https://www.linkedin.com/legal/privacy-policy" target="_blank" rel="noopener">LinkedIn Privacy Policy</a></li>
+    <li><strong>Google Gemini API</strong> — optional AI model. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google Privacy Policy</a></li>
+    <li><strong>OpenAI</strong> — optional AI model. <a href="https://openai.com/policies/privacy-policy" target="_blank" rel="noopener">OpenAI Privacy Policy</a></li>
+  </ul>
+  <p>We do not receive, log, or retain any data that passes between your computer and these services.</p>
+
+  <h2>4. Waitlist and Contact Forms</h2>
+  <p>If you submit your email address via the waitlist form on this website, we collect your email address to send you product updates and early access invitations. We use this data solely for that purpose. You can unsubscribe at any time by emailing <a href="mailto:Marcus@thefitlyapp.com">Marcus@thefitlyapp.com</a>.</p>
+
+  <h2>5. Cookies and Tracking</h2>
+  <p>This website does not use tracking cookies, advertising pixels, or third-party analytics. We use Google Fonts (loaded from Google's servers) solely for typography.</p>
+
+  <h2>6. Data Retention</h2>
+  <p>All data the desktop app stores lives in your local workspace folder. You can delete it at any time by removing that folder. Email addresses collected via the waitlist are retained until you request deletion.</p>
+
+  <h2>7. Your Rights</h2>
+  <p>You have the right to access, correct, or delete any personal data we hold. To exercise these rights, contact us at <a href="mailto:Marcus@thefitlyapp.com">Marcus@thefitlyapp.com</a>. We will respond within 30 days.</p>
+
+  <h2>8. Children's Privacy</h2>
+  <p>Our services are not directed at children under 13. We do not knowingly collect personal data from children.</p>
+
+  <h2>9. Changes to This Policy</h2>
+  <p>We may update this policy as the product evolves. We will update the "Last updated" date above and, for material changes, notify users via email if you are on our waitlist.</p>
+
+  <h2>10. Contact</h2>
+  <p>Questions about this policy? Email us: <a href="mailto:Marcus@thefitlyapp.com">Marcus@thefitlyapp.com</a></p>
+</main>
+
+</body>
+</html>
