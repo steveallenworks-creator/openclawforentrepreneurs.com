@@ -11,6 +11,7 @@
 ```
 website/
 ├── index.html      ← Landing page (all sections, vanilla JS accordion + form)
+├── og-image.png    ← Social sharing preview image (1200×630)
 ├── styles.css      ← Extracted stylesheet (dark theme, violet accent)
 └── README.md       ← This file
 ```
@@ -26,7 +27,6 @@ Replace these placeholders before pointing traffic at the site:
 | `YOUR_FORMSPREE_ID` | `index.html` → `<form action>` | Your Formspree form ID (e.g. `xyzabcde`) |
 | `PLACEHOLDER_STRIPE_LINK` | `index.html` → final CTA button | Stripe payment link (e.g. `https://buy.stripe.com/abc123`) |
 | `DISCORD_INVITE_LINK_PLACEHOLDER` | `index.html` → footer | Your Discord invite URL |
-| `og-image.png` | Root of repo | 1200×630 dark-theme hero screenshot for social sharing |
 
 ### Creating the Formspree endpoint
 1. Go to [formspree.io](https://formspree.io) → sign up free
